@@ -7,9 +7,9 @@ public class Utilisateur {
     private String prenom;
     private String email;
     private String MotDePasse;
-    private int[] historique;
+    private int historique;
 
-    public Utilisateur(int idUtilisateur, int Admin, String nom, String prenom, String email, String MotDePasse, int[] historique) {
+    public Utilisateur(int idUtilisateur, int Admin, String nom, String prenom, String email, String MotDePasse, int historique) {
         this.idUtilisateur = idUtilisateur;
         this.Admin = Admin;
         this.nom = nom;
@@ -18,8 +18,6 @@ public class Utilisateur {
         this.MotDePasse = MotDePasse;
         this.historique = historique;
     }
-
-
 
     public int getIdUtilisateur() {return idUtilisateur;}
     public int getAdmin() {return Admin;}
@@ -35,8 +33,6 @@ public class Utilisateur {
     public String getMotDePasse() {
         return MotDePasse;
     }
-    public int[] getHistorique() {
-        return historique;
-    }
+    public int getHistorique() {return historique;}
 
 }

@@ -10,10 +10,10 @@ public class UtilisateurDAO {
         this.connection = connection;
     }
 
-    public boolean ajouterUtilisateur(Utilisateur utilisateur) {
+    public boolean ajouterUtilisateur(Utilisateur Utilisateur) {
         String sql = "INSERT INTO utilisateur (admin, nom, prenom, email, mot_de_passe) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, Utilisateur.getAdmin() ? 1 : 0);
+            stmt.setInt(1, Utilisateur.getAdmin());
             stmt.setString(2, Utilisateur.getNom());
             stmt.setString(3, Utilisateur.getPrenom());
             stmt.setString(4, Utilisateur.getEmail());
@@ -27,7 +27,6 @@ public class UtilisateurDAO {
     }
 
 
-
     public Utilisateur trouverParEmail(String email) {
         String sql = "SELECT * FROM utilisateur WHERE email = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -36,11 +35,12 @@ public class UtilisateurDAO {
             if (rs.next()) {
                 return new Utilisateur(
                         rs.getInt("id_utilisateur"),
-                        rs.getInt("admin") == 1,
+                        rs.getInt("admin"),
                         rs.getString("nom"),
                         rs.getString("prenom"),
                         rs.getString("email"),
-                        rs.getString("mot_de_passe")
+                        rs.getString("mot_de_passe"),
+                        rs.getInt("historique")
                 );
             }
         } catch (SQLException e) {
