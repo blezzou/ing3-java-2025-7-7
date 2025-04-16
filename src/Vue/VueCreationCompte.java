@@ -7,8 +7,7 @@ import java.awt.event.ActionListener;
 import DAO.AjoutUtilisateur;
 
 public class VueCreationCompte extends JFrame {
-    private JTextField nomField, prenomField, emailField;
-    private JPasswordField motDePasseField;
+    private JTextField nomField, prenomField, emailField, motDePasseField;
 
     public VueCreationCompte() {
         setTitle("Créer un compte");
@@ -31,7 +30,7 @@ public class VueCreationCompte extends JFrame {
         panel.add(emailField);
 
         panel.add(new JLabel("Mot de passe :"));
-        motDePasseField = new JPasswordField();
+        motDePasseField = new JTextField();
         panel.add(motDePasseField);
 
         JButton creerButton = new JButton("Créer le compte");
@@ -45,7 +44,7 @@ public class VueCreationCompte extends JFrame {
                 String nom = nomField.getText();
                 String prenom = prenomField.getText();
                 String email = emailField.getText();
-                String motDePasse = new String(motDePasseField.getPassword());
+                String motDePasse = new String(motDePasseField.getText());
                 AjoutUtilisateur.AjouterUtilisateur(0, nom, prenom, email, motDePasse, 0);
             }
         });
