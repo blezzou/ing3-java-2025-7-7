@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import DAO.AjoutUtilisateur;
+
 public class VueCreationCompte extends JFrame {
     private JTextField nomField, prenomField, emailField;
     private JPasswordField motDePasseField;
@@ -44,12 +46,13 @@ public class VueCreationCompte extends JFrame {
                 String prenom = prenomField.getText();
                 String email = emailField.getText();
                 String motDePasse = new String(motDePasseField.getPassword());
-
-
-
+                AjoutUtilisateur.AjouterUtilisateur(0, nom, prenom, email, motDePasse, 0);
                 //Crerr un new user
             }
+
         });
+
+
 
         setVisible(true);
     }
