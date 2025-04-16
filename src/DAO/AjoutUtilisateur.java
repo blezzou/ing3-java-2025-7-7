@@ -29,7 +29,7 @@ public class AjoutUtilisateur {
         System.out.print("Historique : ");
         int historique = Integer.parseInt(scanner.nextLine());
 
-        // Connexion à la base de données
+        // Connexion a la BDD
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "");
 
