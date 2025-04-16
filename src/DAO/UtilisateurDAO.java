@@ -26,7 +26,7 @@ public class UtilisateurDAO {
             return false;
         }}
 
-    public Utilisateur trouverParEmail(String email) {
+    public Utilisateur trouverUtilisateur(String email) {
         String sql = "SELECT * FROM utilisateur WHERE email = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email);

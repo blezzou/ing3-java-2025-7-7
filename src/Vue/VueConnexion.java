@@ -4,13 +4,16 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import DAO.ChercherUtilisateur;
+import DAO.UtilisateurDAO;
+
 public class VueConnexion extends JFrame {
     private JTextField emailField;
     private JPasswordField motDePasseField;
 
     public VueConnexion() {
         setTitle("Connexion");
-        setSize(300, 200);
+        setSize(750, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // centrer
 
@@ -46,7 +49,7 @@ public class VueConnexion extends JFrame {
                 String email = emailField.getText();
                 String motDePasse = new String(motDePasseField.getPassword());
                 System.out.println("Tentative de connexion : " + email + " / " + motDePasse);
-                //UtilisateurDAO.trouverParEmail()
+                ChercherUtilisateur.ChercherUtilisateur(email, motDePasse);
             }
         });
 

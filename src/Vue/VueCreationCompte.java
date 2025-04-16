@@ -12,7 +12,7 @@ public class VueCreationCompte extends JFrame {
 
     public VueCreationCompte() {
         setTitle("Créer un compte");
-        setSize(300, 250);
+        setSize(750, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -47,13 +47,8 @@ public class VueCreationCompte extends JFrame {
                 String email = emailField.getText();
                 String motDePasse = new String(motDePasseField.getPassword());
                 AjoutUtilisateur.AjouterUtilisateur(0, nom, prenom, email, motDePasse, 0);
-                //Crerr un new user
             }
-
         });
-
-
-
         setVisible(true);
     }
 }
