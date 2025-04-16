@@ -32,10 +32,10 @@ CREATE TABLE IF NOT EXISTS `article` (
   `id_article` int NOT NULL AUTO_INCREMENT,
   `nom` varchar(255) NOT NULL,
   `marque` varchar(255) NOT NULL,
-  `prix` int NOT NULL,
-  `prix_vrac` int NOT NULL,
-  `quantite_vrac` int NOT NULL,
+  `prix` decimal(10,2) NOT NULL,
+  `prix_vrac` decimal(10,2) NOT NULL,
   `quantite` int NOT NULL,
+  `quantite_vrac` int NOT NULL,
   `note` int NOT NULL,
   PRIMARY KEY (`id_article`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
