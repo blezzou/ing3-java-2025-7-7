@@ -1,5 +1,4 @@
 package Modele;
 
-public class Client extends Utilisateur{
-
-}
+//public class Client extends Utilisateur{
+//}

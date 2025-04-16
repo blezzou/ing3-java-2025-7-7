@@ -1,5 +1,4 @@
 package Modele;
 
-public class Administrateur extends Utilisateur{
-
-}
+//public class Administrateur extends Utilisateur{
+//}
