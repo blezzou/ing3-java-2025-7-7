@@ -4,6 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import Modele.Article;
+import DAO.ArticleDAO;
 
 public class VueAccueil extends JFrame {
     private JPanel headerPanel;
@@ -52,16 +56,15 @@ public class VueAccueil extends JFrame {
         articlesPanel = new JPanel();
         articlesPanel.setLayout(new BoxLayout(articlesPanel, BoxLayout.Y_AXIS));
 
-        //Exemple d'articles (à remplacer par un chargement depuis la BDD)
-        for (int i = 1; i <= 10; i++) {
+        List<Article> articles = ArticleDAO.getAllArticles();
+        for (Article a : articles) {
             articlesPanel.add(createArticleCard(
-                    "Article"+i,
-                    "Marque " + i,
-                    10 * i,
-                    "description de l'article " + i
+                    a.getNom(),
+                    a.getMarque(),
+                    a.getPrix(),
+                    //a.getDescription()
             ));
-            articlesPanel.add(Box.createRigidArea(new Dimension(0, 10))); //Espacement
-
+            articlesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         }
 
         scrollPane = new JScrollPane(articlesPanel);

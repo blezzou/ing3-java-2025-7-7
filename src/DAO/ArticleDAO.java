@@ -2,6 +2,9 @@ package DAO;
 
 import Modele.Article;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ArticleDAO {
     private Connection connection;
@@ -26,4 +29,34 @@ public class ArticleDAO {
             e.printStackTrace();
             return false;
         }}
+
+    public static List<Article> getAllArticles() {
+        List<Article> articles = new ArrayList<>();
+
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "");
+            String query = "SELECT nom, marque, prix, description FROM article";
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(query);
+
+            while (rs.next()) {
+                String nom = rs.getString("nom");
+                String marque = rs.getString("marque");
+                double prix = rs.getDouble("prix");
+                String description = rs.getString("description");
+
+                Article a = new Article(nom, marque, prix, description);
+                articles.add(a);
+            }
+
+            connection.close();
+        } catch (SQLException e) {
+            System.out.println("Erreur lors du chargement des articles : " + e.getMessage());
+        }
+
+        return articles;
+    }
+
+
+
 }
