@@ -15,8 +15,8 @@ public class ArticleDAO {
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, Article.getNom());
             stmt.setString(2, Article.getMarque());
-            stmt.setInt(3, Article.getPrix());
-            stmt.setInt(4, Article.getPrix_vrac());
+            stmt.setFloat(3, Article.getPrix());
+            stmt.setFloat(4, Article.getPrix_vrac());
             stmt.setInt(5, Article.getQuantite());
             stmt.setInt(6, Article.getQuantite_vrac());
             stmt.setInt(7, Article.getNote());
