@@ -33,10 +33,18 @@ public class VueAccueil extends JFrame {
         // Boutons panier et profil
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton panierButton = new JButton("Panier");
-        JButton profilButton = new JButton("Profil");
+        JButton SeConnecterButton = new JButton("Se connecter");
         buttonsPanel.add(panierButton);
-        buttonsPanel.add(profilButton);
+        buttonsPanel.add(SeConnecterButton);
         headerPanel.add(buttonsPanel, BorderLayout.EAST);
+
+        SeConnecterButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new VueConnexion();
+                dispose();
+            }
+        });
 
         mainPanel.add(headerPanel, BorderLayout.NORTH);
 
