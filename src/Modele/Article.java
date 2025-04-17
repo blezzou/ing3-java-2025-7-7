@@ -4,13 +4,13 @@ public class Article {
     private int id;
     private String nom;
     private String marque;
-    private int prix;
-    private int prix_vrac;
+    private float prix;
+    private float prix_vrac;
     private int quantite_vrac;
     private int quantite;
     private int note;
 
-    public Article(int id, String nom, String marque, int prix, int prix_vrac, int quantite_vrac, int quantite, int note) {
+    public Article(int id, String nom, String marque, float prix, float prix_vrac, int quantite_vrac, int quantite, int note) {
         this.id = id;
         this.nom = nom;
         this.marque = marque;
@@ -24,8 +24,8 @@ public class Article {
     public int getId() {return id;}
     public String getNom() {return nom;}
     public String getMarque() {return marque;}
-    public int getPrix() {return prix;}
-    public int getPrix_vrac() {return prix_vrac;}
+    public float getPrix() {return prix;}
+    public float getPrix_vrac() {return prix_vrac;}
     public int getQuantite_vrac() {return quantite_vrac;}
     public int getQuantite() {return quantite;}
     public int getNote() {return note;}
