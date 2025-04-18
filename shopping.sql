@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3308
--- Généré le : ven. 18 avr. 2025 à 14:28
+-- Généré le : ven. 18 avr. 2025 à 15:09
 -- Version du serveur : 8.2.0
 -- Version de PHP : 8.2.13
 
@@ -31,6 +31,7 @@ DROP TABLE IF EXISTS `article`;
 CREATE TABLE IF NOT EXISTS `article` (
   `id_article` int NOT NULL AUTO_INCREMENT,
   `nom` varchar(255) NOT NULL,
+  `image` varchar(255) NOT NULL,
   `marque` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
   `prix` decimal(10,2) NOT NULL,
@@ -39,7 +40,15 @@ CREATE TABLE IF NOT EXISTS `article` (
   `quantite_vrac` int NOT NULL,
   `note` int NOT NULL,
   PRIMARY KEY (`id_article`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `article`
+--
+
+INSERT INTO `article` (`id_article`, `nom`, `image`, `marque`, `description`, `prix`, `prix_vrac`, `quantite`, `quantite_vrac`, `note`) VALUES
+(1, 'article 1', '', 'marque 1', 'description 1', 10.00, 5.00, 10, 10, 0),
+(2, 'article 2', '', 'marque 2', 'description 2', 100.00, 50.00, 10, 10, 0);
 
 -- --------------------------------------------------------
 
