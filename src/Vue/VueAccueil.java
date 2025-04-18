@@ -58,12 +58,7 @@ public class VueAccueil extends JFrame {
 
         List<Article> articles = ArticleDAO.getAllArticles();
         for (Article a : articles) {
-            articlesPanel.add(createArticleCard(
-                    a.getNom(),
-                    a.getMarque(),
-                    a.getPrix(),
-                    //a.getDescription()
-            ));
+            articlesPanel.add(createArticleCard(a.getNom(), a.getMarque(), a.getDescription(), a.getPrix(), a.getPrix_vrac(), a.getQuantite(), a.getQuantite_vrac(), a.getNote()));
             articlesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         }
 
@@ -92,7 +87,8 @@ public class VueAccueil extends JFrame {
     }
 
     //méthode pour créer une carte d'article
-    private JPanel createArticleCard(String nom, String marque, double prix, String description) {
+
+    private JPanel createArticleCard(String nom, String marque, String description,  float prix, float prix_vrac, int quantite, int quantite_vrac, int note) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         card.setPreferredSize(new Dimension(900, 150));
@@ -100,6 +96,7 @@ public class VueAccueil extends JFrame {
         JPanel infoPanel = new JPanel(new GridLayout(3, 1));
         infoPanel.add(new JLabel("Nom: " + nom));
         infoPanel.add(new JLabel("Marque: " + marque));
+        infoPanel.add(new JLabel("Description: " + description));
         infoPanel.add(new JLabel("Prix: " + prix + "€"));
 
         JTextArea descArea = new JTextArea(description);
