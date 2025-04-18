@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3308
--- Généré le : mar. 15 avr. 2025 à 09:09
+-- Généré le : ven. 18 avr. 2025 à 14:28
 -- Version du serveur : 8.2.0
 -- Version de PHP : 8.2.13
 
@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS `article` (
   `id_article` int NOT NULL AUTO_INCREMENT,
   `nom` varchar(255) NOT NULL,
   `marque` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
   `prix` decimal(10,2) NOT NULL,
   `prix_vrac` decimal(10,2) NOT NULL,
   `quantite` int NOT NULL,
