@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import DAO.AjoutArticle;
 
 public class VueAjouterArticle extends JFrame {
-    private JTextField nomField, marqueField, descriptionField, prixField, prix_vracField, quantite_vracField, quantiteField;
+    private JTextField nomField, imageField, marqueField, descriptionField, prixField, prix_vracField, quantite_vracField, quantiteField;
     private int noteField;
 
     public VueAjouterArticle() {
@@ -21,6 +21,10 @@ public class VueAjouterArticle extends JFrame {
         panel.add(new JLabel("Nom :"));
         nomField = new JTextField();
         panel.add(nomField);
+
+        panel.add(new JLabel("Chemin vers l'Image :"));
+        imageField = new JTextField();
+        panel.add(imageField);
 
         panel.add(new JLabel("Marque :"));
         marqueField = new JTextField();
@@ -58,6 +62,7 @@ public class VueAjouterArticle extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String nom = nomField.getText();
+                String image = imageField.getText();
                 String marque = marqueField.getText();
                 String description = descriptionField.getText();
                 int prix = Integer.parseInt(prixField.getText());
@@ -65,7 +70,7 @@ public class VueAjouterArticle extends JFrame {
                 int quantite_vrac = Integer.parseInt(quantite_vracField.getText());
                 int quantite = Integer.parseInt(quantiteField.getText());
                 int note = noteField;
-                AjoutArticle.AjouterArticle(nom, marque, description, prix, prix_vrac, quantite_vrac, quantite, note);
+                AjoutArticle.AjouterArticle(nom, image, marque, description, prix, prix_vrac, quantite_vrac, quantite, note);
             }
         });
         setVisible(true);

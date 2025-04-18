@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class AjoutArticle {
-    public static void AjouterArticle(String nom, String marque, String description, int prix, int prix_vrac, int quantite_vrac, int quantite, int note) {
+    public static void AjouterArticle(String nom, String image,String marque, String description, int prix, int prix_vrac, int quantite_vrac, int quantite, int note) {
 
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "");
@@ -17,6 +17,7 @@ public class AjoutArticle {
             Article article = new Article(
                     0,
                     nom,
+                    image,
                     marque,
                     description,
                     prix,

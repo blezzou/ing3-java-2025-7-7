@@ -3,6 +3,7 @@ package Modele;
 public class Article {
     private int id;
     private String nom;
+    private String image;
     private String marque;
     private String description;
     private float prix;
@@ -11,9 +12,10 @@ public class Article {
     private int quantite;
     private int note;
 
-    public Article(int id, String nom, String marque, String description, float prix, float prix_vrac, int quantite_vrac, int quantite, int note) {
+    public Article(int id, String nom, String image, String marque, String description, float prix, float prix_vrac, int quantite_vrac, int quantite, int note) {
         this.id = id;
         this.nom = nom;
+        this.image = image;
         this.marque = marque;
         this.description = description;
         this.prix = prix;
@@ -25,6 +27,7 @@ public class Article {
 
     public int getId() {return id;}
     public String getNom() {return nom;}
+    public String getImage() {return image;}
     public String getMarque() {return marque;}
     public String getDescription() {return description;}
     public float getPrix() {return prix;}
