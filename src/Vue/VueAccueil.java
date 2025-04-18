@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import Modele.Article;
 import DAO.ArticleDAO;
+import DAO.RechercheDAO;
 
 public class VueAccueil extends JFrame {
     private JPanel headerPanel;
@@ -33,6 +34,37 @@ public class VueAccueil extends JFrame {
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
         headerPanel.add(searchPanel, BorderLayout.CENTER);
+
+        searchButton.addActionListener(e -> {
+            String texteRecherche = searchField.getText().trim();
+            if (!texteRecherche.isEmpty()) {
+                List<Article> resultats = RechercheDAO.rechercherArticlesParNom(texteRecherche);
+
+                articlesPanel.removeAll();
+
+                if (resultats.isEmpty()) {
+                    articlesPanel.add(new JLabel("Aucun article trouvé pour : " + texteRecherche));
+                } else {
+                    for (Article a : resultats) {
+                        articlesPanel.add(createArticleCard(
+                                a.getNom(),
+                                a.getMarque(),
+                                a.getDescription(),
+                                a.getPrix(),
+                                a.getPrix_vrac(),
+                                a.getQuantite(),
+                                a.getQuantite_vrac(),
+                                a.getNote()
+                        ));
+                        articlesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+                    }
+                }
+
+                articlesPanel.revalidate();
+                articlesPanel.repaint();
+            }
+        });
+
 
         // Boutons panier et profil
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -72,15 +104,6 @@ public class VueAccueil extends JFrame {
             dispose();
         });
 
-        searchButton.addActionListener(e -> {
-            new VueProfil(); //à implémenter
-            dispose();
-        });
-
-        searchButton.addActionListener(e -> {
-            // À implémenter
-            JOptionPane.showMessageDialog(this, "Fonctionnalité recherche à venir");
-        });
 
         add(mainPanel);
         setVisible(true);
