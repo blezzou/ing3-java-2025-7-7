@@ -38,31 +38,8 @@ public class VueAccueil extends JFrame {
         searchButton.addActionListener(e -> {
             String texteRecherche = searchField.getText().trim();
             if (!texteRecherche.isEmpty()) {
-                List<Article> resultats = RechercheDAO.rechercherArticlesParNom(texteRecherche);
-
-                articlesPanel.removeAll();
-
-                if (resultats.isEmpty()) {
-                    articlesPanel.add(new JLabel("Aucun article trouvé pour : " + texteRecherche));
-                } else {
-                    for (Article a : resultats) {
-                        articlesPanel.add(createArticleCard(
-                                a.getNom(),
-                                a.getMarque(),
-                                a.getDescription(),
-                                a.getPrix(),
-                                a.getPrix_vrac(),
-                                a.getQuantite(),
-                                a.getQuantite_vrac(),
-                                a.getNote()
-                        ));
-                        articlesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-                    }
-                }
-
-                articlesPanel.revalidate();
-                articlesPanel.repaint();
-            }
+            new VueRecherche(texteRecherche);
+        }
         });
 
 
@@ -90,7 +67,7 @@ public class VueAccueil extends JFrame {
 
         List<Article> articles = ArticleDAO.getAllArticles();
         for (Article a : articles) {
-            articlesPanel.add(createArticleCard(a.getNom(), a.getMarque(), a.getDescription(), a.getPrix(), a.getPrix_vrac(), a.getQuantite(), a.getQuantite_vrac(), a.getNote()));
+            articlesPanel.add(createArticleCard(a.getNom(), a.getImage(), a.getMarque(), a.getDescription(), a.getPrix(), a.getPrix_vrac(), a.getQuantite(), a.getQuantite_vrac(), a.getNote()));
             articlesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         }
 
@@ -111,13 +88,14 @@ public class VueAccueil extends JFrame {
 
     //méthode pour créer une carte d'article
 
-    private JPanel createArticleCard(String nom, String marque, String description,  float prix, float prix_vrac, int quantite, int quantite_vrac, int note) {
+    private JPanel createArticleCard(String nom, String image, String marque, String description,  float prix, float prix_vrac, int quantite, int quantite_vrac, int note) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         card.setPreferredSize(new Dimension(900, 150));
 
         JPanel infoPanel = new JPanel(new GridLayout(3, 1));
         infoPanel.add(new JLabel("Nom: " + nom));
+        infoPanel.add(new JLabel("Image: " + image));
         infoPanel.add(new JLabel("Marque: " + marque));
         infoPanel.add(new JLabel("Description: " + description));
         infoPanel.add(new JLabel("Prix: " + prix + "€"));
