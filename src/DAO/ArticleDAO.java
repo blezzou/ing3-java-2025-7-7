@@ -36,12 +36,12 @@ public class ArticleDAO {
 
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "");
-            String query = "SELECT nom, marque, prix, description FROM article";
+            String query = "SELECT * FROM article";
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
 
             while (rs.next()) {
-                int id = rs.getInt("id");
+                int id = rs.getInt("id_article");
                 String nom = rs.getString("nom");
                 String marque = rs.getString("marque");
                 String description = rs.getString("description");
@@ -53,11 +53,13 @@ public class ArticleDAO {
 
                 Article a = new Article(id, nom, marque, description, prix, prix_vrac, quantite, quantite_vrac, note);
                 articles.add(a);
+                System.out.println(a);
             }
 
             connection.close();
         } catch (SQLException e) {
             System.out.println("Erreur lors du chargement des articles : " + e.getMessage());
+            e.printStackTrace();
         }
 
         return articles;
