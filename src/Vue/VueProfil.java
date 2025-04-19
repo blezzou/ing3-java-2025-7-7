@@ -2,8 +2,6 @@ package Vue;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import Modele.Utilisateur;
 import DAO.UtilisateurDAO;
 import java.sql.Connection;
