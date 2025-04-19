@@ -66,7 +66,7 @@ public class VueConnexion extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String email = emailField.getText();
                 String motDePasse = new String(motDePasseField.getPassword());
-                System.out.println("Tentative de connexion : " + email + " /x² " + motDePasse);
+                System.out.println("Tentative de connexion : " + email + " / " + motDePasse);
                 ChercherUtilisateur.ChercherUtilisateur(email, motDePasse);
             }
         });
