@@ -45,7 +45,22 @@ public class VueCreationCompte extends JFrame {
                 String prenom = prenomField.getText();
                 String email = emailField.getText();
                 String motDePasse = new String(motDePasseField.getText());
+
+                if (nom.isEmpty() || prenom.isEmpty() || email.isEmpty() || motDePasse.isEmpty()) {
+                    JOptionPane.showMessageDialog(VueCreationCompte.this,
+                            "Veuillez remplir tous les champs.",
+                            "Champs manquants",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                if (AjoutUtilisateur.emailExiste(email)) {
+                    JOptionPane.showMessageDialog(VueCreationCompte.this, "Cet email est déjà utilisé.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
                 AjoutUtilisateur.AjouterUtilisateur(0, nom, prenom, email, motDePasse, 0);
+                new VueConnexion();
             }
         });
         setVisible(true);
