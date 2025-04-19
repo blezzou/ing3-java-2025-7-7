@@ -18,6 +18,21 @@ public class Utilisateur {
         this.MotDePasse = MotDePasse;
         this.historique = historique;
     }
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setMotDePasse(String motDePasse) {
+        this.MotDePasse = motDePasse;
+    }
 
     public int getIdUtilisateur() {return idUtilisateur;}
     public int getAdmin() {return Admin;}

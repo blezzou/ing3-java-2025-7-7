@@ -24,7 +24,8 @@ public class UtilisateurDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
-        }}
+        }
+    }
 
     public Utilisateur trouverUtilisateur(String email) {
         String sql = "SELECT * FROM utilisateur WHERE email = ?";
@@ -46,4 +47,19 @@ public class UtilisateurDAO {
             e.printStackTrace();
         }
         return null;
-    }}
+    }
+    public boolean mettreAJourUtilisateur(Utilisateur utilisateur) {
+        String sql = "UPDATE utilisateur SET nom=?, prenom=?, email=?, mot_de_passe=? WHERE id_utilisateur=?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, utilisateur.getNom());
+            stmt.setString(2, utilisateur.getPrenom());
+            stmt.setString(3, utilisateur.getEmail());
+            stmt.setString(4, utilisateur.getMotDePasse());
+            stmt.setInt(5, utilisateur.getIdUtilisateur());
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+}
