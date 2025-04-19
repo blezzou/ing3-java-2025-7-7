@@ -198,3 +198,4 @@ public class VueProfil extends JFrame {
         SwingUtilities.invokeLater(() -> new VueProfil(testUser));
     }
 }
+
