@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import Modele.Utilisateur;
 import DAO.UtilisateurDAO;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -54,6 +57,21 @@ public class VueProfil extends JFrame {
         contentPanel.add(infoPanel);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
 
+        if (utilisateur.getAdmin() == 1) {
+            JButton ajouterUnArticle = new JButton("Ajouter un article");
+            // Tu peux ajouter ici un ActionListener si tu veux ouvrir une nouvelle fenêtre
+            contentPanel.add(Box.createRigidArea(new Dimension(0, 10))); // petit espace visuel
+            contentPanel.add(ajouterUnArticle);
+
+            ajouterUnArticle.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    new VueAjouterArticle();
+                    dispose();
+                }
+            });
+        }
+
         // Section Historique (A FAIRE)
         JPanel historiquePanel = createHistoriquePanel();
         contentPanel.add(historiquePanel);
@@ -79,6 +97,8 @@ public class VueProfil extends JFrame {
                 dispose();
             }
         });
+
+
 
         add(mainPanel);
         setVisible(true);

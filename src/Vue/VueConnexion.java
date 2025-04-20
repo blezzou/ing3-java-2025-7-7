@@ -31,16 +31,10 @@ public class VueConnexion extends JFrame {
         JButton seConnecterButton = new JButton("Se connecter");
         JButton creerCompteButton = new JButton("Créer un compte");
 
-        /*-----------------------------------------------------------------*/
-        JButton ajouterUnArticleTest = new JButton("Ajouter un article test");
-        /*-----------------------------------------------------------------*/
 
         panel.add(seConnecterButton);
         panel.add(creerCompteButton);
 
-        /*-----------------------------------------------------------------*/
-        panel.add(ajouterUnArticleTest);
-        /*-----------------------------------------------------------------*/
 
         add(panel);
 
@@ -52,15 +46,6 @@ public class VueConnexion extends JFrame {
             }
         });
 
-        /*-----------------------------------------------------------------*/
-        ajouterUnArticleTest.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new VueAjouterArticle();
-                dispose();
-            }
-        });
-        /*-----------------------------------------------------------------*/
 
         seConnecterButton.addActionListener(new ActionListener() {
             @Override

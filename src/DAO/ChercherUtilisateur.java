@@ -34,10 +34,10 @@ public class ChercherUtilisateur {
                         resultSet.getString("email"),
                         resultSet.getString("mot_de_passe"),
                         resultSet.getInt("historique")
-
                 );
 
                 System.out.println("Connexion réussie pour : " + utilisateur.getEmail());
+                System.out.println("admin" + utilisateur.getAdmin());
             }
 
             //System.out.println("teeeeest" + utilisateur);
