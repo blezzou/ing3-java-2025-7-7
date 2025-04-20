@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3308
--- Généré le : ven. 18 avr. 2025 à 15:09
+-- Généré le : dim. 20 avr. 2025 à 08:30
 -- Version du serveur : 8.2.0
 -- Version de PHP : 8.2.13
 
@@ -62,6 +62,8 @@ CREATE TABLE IF NOT EXISTS `panier` (
   `id_utilisateur` int NOT NULL,
   `articles` json NOT NULL,
   `prix` int NOT NULL,
+  `validé` int NOT NULL,
+  `date` date NOT NULL,
   PRIMARY KEY (`id_panier`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -81,7 +83,15 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
   `mot_de_passe` varchar(255) NOT NULL,
   `historique` int NOT NULL,
   PRIMARY KEY (`id_utilisateur`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `utilisateur`
+--
+
+INSERT INTO `utilisateur` (`id_utilisateur`, `admin`, `nom`, `prenom`, `email`, `mot_de_passe`, `historique`) VALUES
+(1, 0, 'Nicolas', 'Pellerin', 'nicolas@gmail.com', 'azerty', 0),
+(3, 0, 'aaa', 'aaa', 'nicolas@gmail.com', 'aa', 0);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
