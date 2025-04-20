@@ -2,8 +2,6 @@ package Vue;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 import Modele.Article;
 import Modele.Utilisateur;
