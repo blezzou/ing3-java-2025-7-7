@@ -1,7 +1,6 @@
 package DAO;
 
 import Modele.Article;
-import DAO.ArticleDAO;
 
 import java.sql.*;
 import java.util.ArrayList;
