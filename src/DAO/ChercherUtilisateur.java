@@ -1,6 +1,5 @@
 package DAO;
 
-import DAO.UtilisateurDAO;
 import Modele.Utilisateur;
 
 import java.sql.Connection;
