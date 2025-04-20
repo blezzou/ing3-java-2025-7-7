@@ -1,12 +1,11 @@
 package DAO;
 
-import DAO.ArticleDAO;
+
 import Modele.Article;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Scanner;
 
 public class AjoutArticle {
     public static void AjouterArticle(String nom, String image,String marque, String description, int prix, int prix_vrac, int quantite_vrac, int quantite, int note) {
