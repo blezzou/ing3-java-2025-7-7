@@ -1,9 +1,8 @@
 package DAO;
 
-import DAO.UtilisateurDAO;
 import Modele.Utilisateur;
 import java.sql.*;
-import java.util.Scanner;
+
 
 public class AjoutUtilisateur {
     public static void AjouterUtilisateur(int admin, String nom, String prenom, String email, String motDePasse, int historique) {
