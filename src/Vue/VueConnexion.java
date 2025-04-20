@@ -6,8 +6,6 @@ import java.awt.event.ActionListener;
 import Modele.Utilisateur;
 
 import DAO.ChercherUtilisateur;
-import DAO.UtilisateurDAO;
-import DAO.RechercheDAO;
 
 public class VueConnexion extends JFrame {
     private JTextField emailField;
