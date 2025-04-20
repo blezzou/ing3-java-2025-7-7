@@ -10,7 +10,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ChercherUtilisateur {
-    public static void ChercherUtilisateur(String email, String motDePasse) {
+    public static Utilisateur ChercherUtilisateur(String email, String motDePasse) {
+        Utilisateur utilisateur = null;
+
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "");
 
@@ -24,6 +26,23 @@ public class ChercherUtilisateur {
             boolean success = resultSet.next();
 
             if (success) {
+                utilisateur = new Utilisateur(
+                        resultSet.getInt("id_utilisateur"),
+                        resultSet.getInt("admin"),
+                        resultSet.getString("nom"),
+                        resultSet.getString("prenom"),
+                        resultSet.getString("email"),
+                        resultSet.getString("mot_de_passe"),
+                        resultSet.getInt("historique")
+
+                );
+
+                System.out.println("Connexion réussie pour : " + utilisateur.getEmail());
+            }
+
+            //System.out.println("teeeeest" + utilisateur);
+
+            if (success) {
                 System.out.println("Bienvenue");
             } else {
                 System.out.println("Échec");
@@ -33,5 +52,7 @@ public class ChercherUtilisateur {
         } catch (SQLException e) {
             System.out.println("Erreur lors de la connexion à la BDD : " + e.getMessage());
         }
+
+        return utilisateur;
     }
 }

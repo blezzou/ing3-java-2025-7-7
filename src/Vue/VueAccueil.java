@@ -15,12 +15,15 @@ public class VueAccueil extends JFrame {
     private JScrollPane scrollPane;
     private Utilisateur utilisateurConnecte;
 
+
     public VueAccueil(Utilisateur utilisateur) {
         this.utilisateurConnecte = utilisateur;
         setTitle("Accueil - Shopping");
         setSize(1000, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+
+        //System.out.println(utilisateurConnecte);
 
         // Création du conteneur principal
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -106,6 +109,8 @@ public class VueAccueil extends JFrame {
         setVisible(true);
     }
 
+
+
     private JPanel createArticleCard(String nom, String image, String marque, String description,
                                      float prix, float prix_vrac, int quantite, int quantite_vrac, int note) {
         JPanel card = new JPanel(new BorderLayout());
@@ -137,7 +142,5 @@ public class VueAccueil extends JFrame {
     public static void main(String[] args) {
         // Pour tester sans utilisateur connecté
         SwingUtilities.invokeLater(() -> new VueAccueil(null));
-
-
     }
 }

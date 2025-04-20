@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import Modele.Utilisateur;
 
 import DAO.ChercherUtilisateur;
 import DAO.UtilisateurDAO;
@@ -67,10 +68,10 @@ public class VueConnexion extends JFrame {
                 String email = emailField.getText();
                 String motDePasse = new String(motDePasseField.getPassword());
                 System.out.println("Tentative de connexion : " + email + " / " + motDePasse);
-                ChercherUtilisateur.ChercherUtilisateur(email, motDePasse);
+                Utilisateur utilisateur = ChercherUtilisateur.ChercherUtilisateur(email, motDePasse);
+                new VueAccueil(utilisateur);
             }
         });
-
         setVisible(true);
     }
 
