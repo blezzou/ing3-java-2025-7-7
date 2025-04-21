@@ -79,6 +79,24 @@ public class VueAccueil extends JFrame {
         articlesPanel.setLayout(new BoxLayout(articlesPanel, BoxLayout.Y_AXIS));
 
         List<Article> articles = ArticleDAO.getAllArticles();
+        if (utilisateurConnecte != null) {
+            for (Article a : articles) {
+                articlesPanel.add(createArticleCard(
+                        a.getNom(),
+                        a.getImage(),
+                        a.getMarque(),
+                        a.getDescription(),
+                        a.getPrix(),
+                        a.getPrix_vrac(),
+                        a.getQuantite(),
+                        a.getQuantite_vrac(),
+                        a.getNote(),
+                        utilisateurConnecte.getAdmin()
+                ));
+                articlesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+            }
+            }
+        else {
         for (Article a : articles) {
             articlesPanel.add(createArticleCard(
                     a.getNom(),
@@ -89,9 +107,11 @@ public class VueAccueil extends JFrame {
                     a.getPrix_vrac(),
                     a.getQuantite(),
                     a.getQuantite_vrac(),
-                    a.getNote()
+                    a.getNote(),
+                    0
             ));
             articlesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        }
         }
 
         scrollPane = new JScrollPane(articlesPanel);
@@ -108,10 +128,8 @@ public class VueAccueil extends JFrame {
         setVisible(true);
     }
 
-
-
     private JPanel createArticleCard(String nom, String image, String marque, String description,
-                                     float prix, float prix_vrac, int quantite, int quantite_vrac, int note) {
+                                     float prix, float prix_vrac, int quantite, int quantite_vrac, int note, int admin) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         card.setPreferredSize(new Dimension(900, 150));
@@ -125,15 +143,42 @@ public class VueAccueil extends JFrame {
         descArea.setEditable(false);
         descArea.setLineWrap(true);
 
-        JButton ajouterButton = new JButton("Ajouter au panier");
-        ajouterButton.addActionListener(e -> {
-            // À implémenter
-            JOptionPane.showMessageDialog(this, "Article ajouté au panier");
-        });
+
+        if (admin == 1) {
+            // Créer un panel pour empiler les boutons verticalement
+            JPanel adminButtonsPanel = new JPanel();
+            adminButtonsPanel.setLayout(new BoxLayout(adminButtonsPanel, BoxLayout.Y_AXIS));
+
+            JButton ajouterButton = new JButton("Ajouter au panier");
+            ajouterButton.addActionListener(e -> {
+                JOptionPane.showMessageDialog(this, "Article ajouté au panier");
+            });
+
+            JButton supprimerButton = new JButton("Supprimer l'article");
+            supprimerButton.addActionListener(e -> {
+                // À implémenter : suppression de l'article
+                JOptionPane.showMessageDialog(this, "Suppression à implémenter");
+            });
+
+            adminButtonsPanel.add(ajouterButton);
+            adminButtonsPanel.add(Box.createRigidArea(new Dimension(0, 5))); // petit espace
+            adminButtonsPanel.add(supprimerButton);
+
+            card.add(adminButtonsPanel, BorderLayout.EAST);
+        } else {
+            // Si pas admin, juste le bouton Ajouter
+            JButton ajouterButton = new JButton("Ajouter au panier");
+            ajouterButton.addActionListener(e -> {
+                JOptionPane.showMessageDialog(this, "Article ajouté au panier");
+            });
+            card.add(ajouterButton, BorderLayout.EAST);
+        }
+
 
         card.add(infoPanel, BorderLayout.WEST);
         card.add(descArea, BorderLayout.CENTER);
-        card.add(ajouterButton, BorderLayout.EAST);
+
+
 
         return card;
     }
