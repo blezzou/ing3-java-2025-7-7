@@ -47,8 +47,11 @@ CREATE TABLE IF NOT EXISTS `article` (
 --
 
 INSERT INTO `article` (`id_article`, `nom`, `image`, `marque`, `description`, `prix`, `prix_vrac`, `quantite`, `quantite_vrac`, `note`) VALUES
-(1, 'article 1', '', 'marque 1', 'description 1', 10.00, 5.00, 10, 10, 0),
-(2, 'article 2', '', 'marque 2', 'description 2', 100.00, 50.00, 10, 10, 0);
+  (1, 'Pantalon', 'images_Article/Levis_noir.jpg', 'Levi\'s', 'Le Levi''s 511 offre une silhouette moderne avec sa coupe slim fit. En denim stretch pour une liberté de mouvement, ce pantalon allie élégance et confort. Poches avant et arrière fonctionnelles, fermeture à zip et bouton. Parfait pour une tenue quotidienne ou sortie habillée décontractée. ', 35.00, 26.00, 30, 15, 8),
+  (2, 'Pantalon', 'images_Article/Adidas.jpg', 'Adidas', 'Pantalon de sport technique Adidas Tiro 23 en polyester stretch. Coupe tapered avec bandes contrastées, ceinture élastiquée et poches zippées. Insertions stretch aux genoux et traitement anti-odeurs. Idéal entraînement et style urbain. Lavage 30°C. Tailles S-XXL.', 45.00, 33.00, 30, 20, 9),
+  (3, 'Chaussures', 'images_Article/chaussure_Nike.jpg', 'Nike', 'Chaussures Nike Air Max 270 avec amorti Air Max visible pour un confort inégalé. Upper en mesh respirant, semelle en caoutchouc et logo swoosh contrasté. Idéales pour le sport et le style urbain. Disponibles en plusieurs coloris. Poids léger (320g).', 60.00, 46.00, 25, 13, 8),
+  (4, 'Chapeau de plage', 'images_Article/tencozPlage.jpg', 'Tencoz', 'Chapeau de plage avec protection UV 50+, bord large 7cm en polyester respirant. Bandeau coton intérieur et lanière réglable. Léger (120g) et pliable. Tailles 54-60cm. Parfait pour plage, piscine et activités nautiques.', 38.55, 19.99, 24, 15, 7);
+COMMIT;
 
 -- --------------------------------------------------------
 
