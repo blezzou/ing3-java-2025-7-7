@@ -120,7 +120,7 @@ public class VueAccueil extends JFrame {
 
         // Gestion des événements
         panierButton.addActionListener(e -> {
-            new VuePanier();
+            new VuePanier(utilisateur);
             dispose();
         });
 

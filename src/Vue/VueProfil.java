@@ -86,7 +86,7 @@ public class VueProfil extends JFrame {
         });
 
         panierButton.addActionListener(e -> {
-            new VuePanier();
+            new VuePanier(utilisateur);
             dispose();
         });
 
