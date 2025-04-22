@@ -1,6 +1,9 @@
 package DAO;
 
 import Modele.Utilisateur;
+/**
+ * classe utile pour authentifier les utilisateurs
+ */
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,18 +11,28 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ChercherUtilisateur {
+public class ChercherUtilisateur
+/**
+ * Authentifie un utilisateur par email/mot de passe
+ * prend en @param email Email de l'utilisateur
+ * @param motDePasse Mot de passe en clair
+ * return Utilisateur authentifié ou null
+ */
+{
     public static Utilisateur ChercherUtilisateur(String email, String motDePasse) {
         Utilisateur utilisateur = null;
 
         try {
+            //connexion à la BDD
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "");
 
+            //requete d'authentification
             String sql = "SELECT * FROM utilisateur WHERE email = ? AND mot_de_passe = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, email);
             statement.setString(2, motDePasse);
 
+            //exécution
             ResultSet resultSet = statement.executeQuery();
 
             boolean success = resultSet.next();

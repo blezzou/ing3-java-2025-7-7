@@ -3,15 +3,21 @@ package DAO;
 import Modele.Utilisateur;
 import java.sql.*;
 
+/**
+ * Classe utilitaire pour gérrer l'ajout et la vérification des utilisateurs
+ */
+
 
 public class AjoutUtilisateur {
+    //ajoute un nouvel utilisateur dans la base de données
     public static void AjouterUtilisateur(int admin, String nom, String prenom, String email, String motDePasse, int historique) {
 
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "");
 
+            //creation de l'objet utilisateur
             Utilisateur utilisateur = new Utilisateur(
-                    0,
+                    0, //ID auto-incrémenté
                     admin,
                     nom,
                     prenom,
@@ -20,6 +26,7 @@ public class AjoutUtilisateur {
                     historique
             );
 
+            // utilisation de UtilisateurDAO
             UtilisateurDAO utilisateurDAO = new UtilisateurDAO(connection);
 
             boolean success = utilisateurDAO.ajouterUtilisateur(utilisateur);
@@ -35,6 +42,12 @@ public class AjoutUtilisateur {
             System.out.println("Erreur lors de la connexion à la BDD : " + e.getMessage());
         }
     }
+
+    /**
+     * Vérifie si un email existe déjà
+     * @param email Email à vérifier
+     * @return true si l'email existe déjà
+     */
 
 
     public static boolean emailExiste(String email) {
