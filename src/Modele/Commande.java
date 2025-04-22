@@ -1,15 +1,21 @@
 package Modele;
 
+/**
+ * Classe représentant une commande passée par un utilisateur.
+ * Contient les informations sur les articles commandés et les quantités
+ */
 public class Commande {
-    private int id_article;
-    private String nom;
-    private String marque;
-    private int prix;
-    private int quantite;
-    private int prix_vrac;
-    private int quantite_vrac;
-    private int note;
+    // attributs
+    private int id_article; //identifiant unique de l'article commandé
+    private String nom; //Nom de l'article
+    private String marque; //marque de l'article
+    private int prix; //prix unitaire de l'article
+    private int quantite; //quantité commandée
+    private int prix_vrac; //Prix en gros (pour les lots)
+    private int quantite_vrac; //quantité nécessaire pour bénéficier du prix en gros
+    private int note; //note attribuée à l'article
 
+    //constructeur pour créer une nouvelle commande
     public Commande(int id_article,String nom, String marque, int prix, int quantite, int prix_vrac, int quantite_vrac, int note) {
     this.id_article = id_article;
     this.nom = nom;
@@ -21,6 +27,7 @@ public class Commande {
     this.note = note;
     }
 
+    //getters
     public int getId_article() {
         return id_article;
     }

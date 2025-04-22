@@ -1,17 +1,19 @@
 package Modele;
 
 public class Article {
-    private int id;
-    private String nom;
-    private String image;
-    private String marque;
-    private String description;
-    private float prix;
-    private float prix_vrac;
-    private int quantite_vrac;
-    private int quantite;
-    private int note;
+    //Déclaration des attributs avec leurs types
+    private int id; //Identifiant unique de l'article
+    private String nom; //Nom de l'article
+    private String image; //Chemin vers l'image de l'article
+    private String marque; //Marque de l'article
+    private String description; //Description détaillée de l'article
+    private float prix; //Prix unitaire de l'article
+    private float prix_vrac; //prix en gros (lot) de l'article
+    private int quantite_vrac; //Quantité nécessaire pour le prix en gros
+    private int quantite; //stock disponible
+    private int note; //note moyenne des clients
 
+    //constructeur
     public Article(int id, String nom, String image, String marque, String description, float prix, float prix_vrac, int quantite_vrac, int quantite, int note) {
         this.id = id;
         this.nom = nom;
@@ -25,6 +27,7 @@ public class Article {
         this.note = note;
     }
 
+    //getters
     public int getId() {return id;}
     public String getNom() {return nom;}
     public String getImage() {return image;}
