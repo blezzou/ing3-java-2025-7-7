@@ -13,7 +13,6 @@ public class VueAccueil extends JFrame {
     private JScrollPane scrollPane;
     private Utilisateur utilisateurConnecte;
 
-
     public VueAccueil(Utilisateur utilisateur) {
         this.utilisateurConnecte = utilisateur;
         setTitle("Accueil - Shopping");
