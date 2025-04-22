@@ -10,7 +10,7 @@ public class VueArticle extends JFrame {
     private Article article;
     private Utilisateur utilisateur;
 
-    public VueArticle(Article article) {
+    public VueArticle(Article article, Utilisateur utilisateur) {
         this.article = article;
         this.utilisateur = utilisateur;
 
@@ -44,13 +44,22 @@ public class VueArticle extends JFrame {
         infoPanel.add(new JLabel("Note : " + article.getNote() + "/5"));
         infoPanel.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        JButton ajouterPanierBtn = new JButton("Ajouter au panier");
-        ajouterPanierBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
-        ajouterPanierBtn.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Article ajouté au panier !");
-            // méthode DAO pour ajouter dans panier_article
-        });
-        infoPanel.add(ajouterPanierBtn);
+        if (utilisateur != null) {
+            JButton ajouterPanierBtn = new JButton("Ajouter au panier");
+            ajouterPanierBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+            ajouterPanierBtn.addActionListener(e -> {
+                JOptionPane.showMessageDialog(this, "Article ajouté au panier !");
+                // méthode DAO pour ajouter dans panier_article
+            });
+            infoPanel.add(ajouterPanierBtn);
+        } else {
+            JButton ajouterPanierBtn = new JButton("Ajouter au panier");
+            ajouterPanierBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+            ajouterPanierBtn.addActionListener(e -> {
+                new VueConnexion();
+            });
+            infoPanel.add(ajouterPanierBtn);
+        }
 
         JButton retourBtn = new JButton("Retour");
         retourBtn.setAlignmentX(Component.LEFT_ALIGNMENT);

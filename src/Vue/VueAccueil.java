@@ -91,6 +91,7 @@ public class VueAccueil extends JFrame {
                         a.getQuantite(),
                         a.getQuantite_vrac(),
                         a.getNote(),
+                        utilisateurConnecte,
                         utilisateurConnecte.getAdmin()
                 ));
                 articlesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -110,6 +111,7 @@ public class VueAccueil extends JFrame {
                     a.getQuantite(),
                     a.getQuantite_vrac(),
                     a.getNote(),
+                    utilisateurConnecte,
                     0
             ));
             articlesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -131,7 +133,7 @@ public class VueAccueil extends JFrame {
     }
 
     private JPanel createArticleCard(Article a, int id, String nom, String image, String marque, String description,
-                                     float prix, float prix_vrac, int quantite, int quantite_vrac, int note, int admin) {
+                                     float prix, float prix_vrac, int quantite, int quantite_vrac, int note, Utilisateur utilisateur, int admin) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         card.setPreferredSize(new Dimension(900, 150));
@@ -145,48 +147,68 @@ public class VueAccueil extends JFrame {
         descArea.setEditable(false);
         descArea.setLineWrap(true);
 
+        if(utilisateurConnecte != null) {
+            if (admin == 1) {
+                // Créer un panel pour empiler les boutons verticalement
+                JPanel adminButtonsPanel = new JPanel();
+                adminButtonsPanel.setLayout(new BoxLayout(adminButtonsPanel, BoxLayout.Y_AXIS));
 
-        if (admin == 1) {
-            // Créer un panel pour empiler les boutons verticalement
-            JPanel adminButtonsPanel = new JPanel();
-            adminButtonsPanel.setLayout(new BoxLayout(adminButtonsPanel, BoxLayout.Y_AXIS));
+                JButton voirArticle = new JButton("Voir l'article");
+                voirArticle.addActionListener(e -> {
+                    new VueArticle(a, utilisateurConnecte);
+                });
 
-            JButton voirArticle = new JButton("Voir l'article");
-            voirArticle.addActionListener(e -> {
-                new VueArticle(a);
-            });
+                JButton ajouterButton = new JButton("Ajouter au panier");
+                ajouterButton.addActionListener(e -> {
+                    JOptionPane.showMessageDialog(this, "Article ajouté au panier");
+                });
 
-            JButton ajouterButton = new JButton("Ajouter au panier");
-            ajouterButton.addActionListener(e -> {
-                JOptionPane.showMessageDialog(this, "Article ajouté au panier");
-            });
+                JButton supprimerButton = new JButton("Supprimer l'article");
+                supprimerButton.addActionListener(e -> {
+                    ArticleDAO.supprimerArticle(id);
+                    dispose();
+                    new VueAccueil(utilisateurConnecte);
+                });
 
-            JButton supprimerButton = new JButton("Supprimer l'article");
-            supprimerButton.addActionListener(e -> {
-                ArticleDAO.supprimerArticle(id);
-                dispose();
-                new VueAccueil(utilisateurConnecte);
-            });
+                adminButtonsPanel.add(ajouterButton);
+                adminButtonsPanel.add(Box.createRigidArea(new Dimension(0, 5))); // petit espace
+                adminButtonsPanel.add(voirArticle);
+                adminButtonsPanel.add(Box.createRigidArea(new Dimension(0, 5))); // petit espace
+                adminButtonsPanel.add(supprimerButton);
 
-            adminButtonsPanel.add(ajouterButton);
-            adminButtonsPanel.add(Box.createRigidArea(new Dimension(0, 5))); // petit espace
-            adminButtonsPanel.add(voirArticle);
-            adminButtonsPanel.add(Box.createRigidArea(new Dimension(0, 5))); // petit espace
-            adminButtonsPanel.add(supprimerButton);
+                card.add(adminButtonsPanel, BorderLayout.EAST);
+            } else {
+                JPanel ButtonsPanel = new JPanel();
+                ButtonsPanel.setLayout(new BoxLayout(ButtonsPanel, BoxLayout.Y_AXIS));
+                // Si pas admin, juste le bouton Ajouter
+                JButton voirArticle = new JButton("Voir l'article");
+                voirArticle.addActionListener(e -> {
+                    new VueArticle(a, utilisateurConnecte);
+                });
 
-            card.add(adminButtonsPanel, BorderLayout.EAST);
+                JButton ajouterButton = new JButton("Ajouter au panier");
+                ajouterButton.addActionListener(e -> {
+                    JOptionPane.showMessageDialog(this, "Article ajouté au panier");
+                });
+
+                ButtonsPanel.add(ajouterButton);
+                ButtonsPanel.add(Box.createRigidArea(new Dimension(0, 5))); // petit espace
+                ButtonsPanel.add(voirArticle);
+
+                card.add(ButtonsPanel, BorderLayout.EAST);
+            }
         } else {
             JPanel ButtonsPanel = new JPanel();
             ButtonsPanel.setLayout(new BoxLayout(ButtonsPanel, BoxLayout.Y_AXIS));
             // Si pas admin, juste le bouton Ajouter
             JButton voirArticle = new JButton("Voir l'article");
             voirArticle.addActionListener(e -> {
-                new VueArticle(a);
+                new VueArticle(a, utilisateurConnecte);
             });
 
             JButton ajouterButton = new JButton("Ajouter au panier");
             ajouterButton.addActionListener(e -> {
-                JOptionPane.showMessageDialog(this, "Article ajouté au panier");
+                new VueConnexion();
             });
 
             ButtonsPanel.add(ajouterButton);
@@ -195,7 +217,6 @@ public class VueAccueil extends JFrame {
 
             card.add(ButtonsPanel, BorderLayout.EAST);
         }
-
 
         card.add(infoPanel, BorderLayout.WEST);
         card.add(descArea, BorderLayout.CENTER);
