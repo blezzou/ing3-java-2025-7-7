@@ -4,15 +4,15 @@ import Modele.Utilisateur;
 import java.sql.*;
 
 public class UtilisateurDAO {
-    private Connection connection;
+    private Connection connexion;
 
     public UtilisateurDAO(Connection connection) {
-        this.connection = connection;
+        this.connexion = connection;
     }
 
     public boolean ajouterUtilisateur(Utilisateur Utilisateur) {
         String sql = "INSERT INTO utilisateur (admin, nom, prenom, email, mot_de_passe, historique) VALUES (?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connexion.prepareStatement(sql)) {
             stmt.setInt(1, Utilisateur.getAdmin());
             stmt.setString(2, Utilisateur.getNom());
             stmt.setString(3, Utilisateur.getPrenom());
@@ -29,7 +29,7 @@ public class UtilisateurDAO {
 
     public Utilisateur trouverUtilisateur(String email) {
         String sql = "SELECT * FROM utilisateur WHERE email = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connexion.prepareStatement(sql)) {
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -48,9 +48,10 @@ public class UtilisateurDAO {
         }
         return null;
     }
+
     public boolean mettreAJourUtilisateur(Utilisateur utilisateur) {
         String sql = "UPDATE utilisateur SET nom=?, prenom=?, email=?, mot_de_passe=? WHERE id_utilisateur=?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connexion.prepareStatement(sql)) {
             stmt.setString(1, utilisateur.getNom());
             stmt.setString(2, utilisateur.getPrenom());
             stmt.setString(3, utilisateur.getEmail());

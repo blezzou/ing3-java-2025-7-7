@@ -99,7 +99,6 @@ public class VueProfil extends JFrame {
         });
 
 
-
         add(mainPanel);
         setVisible(true);
     }
@@ -218,5 +217,3 @@ public class VueProfil extends JFrame {
         SwingUtilities.invokeLater(() -> new VueProfil(testUser));
     }
 }
-
-

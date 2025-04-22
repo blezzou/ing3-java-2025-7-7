@@ -1,21 +1,23 @@
 package DAO;
 
 import Modele.Article;
+import Modele.Utilisateur;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class ArticleDAO {
-    private Connection connection;
+    private Connection connexion;
 
     public ArticleDAO(Connection connection) {
-        this.connection = connection;
+        this.connexion = connection;
     }
 
     public boolean ajouterArticle(Article Article) {
         String sql = "INSERT INTO article (nom, image, marque, description, prix, prix_vrac, quantite_vrac, quantite, note) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connexion.prepareStatement(sql)) {
             stmt.setString(1, Article.getNom());
             stmt.setString(2, Article.getImage());
             stmt.setString(3, Article.getMarque());
@@ -87,4 +89,19 @@ public class ArticleDAO {
             return false;
         }
     }
+
+    public boolean mettreAJourArticle(Article article) {
+        String sql = "UPDATE article SET nom=?, marque=?, description=? WHERE id_article=?";
+        try (PreparedStatement stmt = connexion.prepareStatement(sql)) {
+            stmt.setString(1, article.getNom());
+            stmt.setString(2, article.getMarque());
+            stmt.setString(3, article.getDescription());
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
 }
