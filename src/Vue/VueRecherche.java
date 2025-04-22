@@ -9,6 +9,7 @@ import java.util.List;
 
 public class VueRecherche extends JFrame {
     private JPanel resultPanel;
+    private JPanel headerPanel;
 
     public VueRecherche(String texteRecherche) {
         setTitle("Résultats de recherche pour : " + texteRecherche);
@@ -20,6 +21,28 @@ public class VueRecherche extends JFrame {
 
         resultPanel = new JPanel();
         resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.Y_AXIS));
+
+        headerPanel = new JPanel(new BorderLayout());
+
+        // Barre de recherche
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JTextField searchField = new JTextField(30);
+        JButton searchButton = new JButton("Rechercher");
+        searchPanel.add(searchField);
+        searchPanel.add(searchButton);
+        headerPanel.add(searchPanel, BorderLayout.CENTER);
+
+        searchButton.addActionListener(e -> {
+            String nouveauTexteRecherche = searchField.getText().trim();
+            if (!nouveauTexteRecherche.isEmpty()) {
+                new VueRecherche(nouveauTexteRecherche);
+                dispose();
+            }
+        });
+
+        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        headerPanel.add(buttonsPanel, BorderLayout.EAST);
+        mainPanel.add(headerPanel, BorderLayout.NORTH);
 
         List<Article> resultats = RechercheDAO.rechercherArticlesParNom(texteRecherche);
 

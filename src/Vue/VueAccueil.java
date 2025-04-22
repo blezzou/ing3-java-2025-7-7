@@ -82,6 +82,7 @@ public class VueAccueil extends JFrame {
         if (utilisateurConnecte != null) {
             for (Article a : articles) {
                 articlesPanel.add(createArticleCard(
+                        a.getId(),
                         a.getNom(),
                         a.getImage(),
                         a.getMarque(),
@@ -99,6 +100,7 @@ public class VueAccueil extends JFrame {
         else {
         for (Article a : articles) {
             articlesPanel.add(createArticleCard(
+                    a.getId(),
                     a.getNom(),
                     a.getImage(),
                     a.getMarque(),
@@ -128,7 +130,7 @@ public class VueAccueil extends JFrame {
         setVisible(true);
     }
 
-    private JPanel createArticleCard(String nom, String image, String marque, String description,
+    private JPanel createArticleCard(int id, String nom, String image, String marque, String description,
                                      float prix, float prix_vrac, int quantite, int quantite_vrac, int note, int admin) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
@@ -156,8 +158,9 @@ public class VueAccueil extends JFrame {
 
             JButton supprimerButton = new JButton("Supprimer l'article");
             supprimerButton.addActionListener(e -> {
-                // À implémenter : suppression de l'article
-                JOptionPane.showMessageDialog(this, "Suppression à implémenter");
+                ArticleDAO.supprimerArticle(id);
+                dispose();
+                new VueAccueil(utilisateurConnecte);
             });
 
             adminButtonsPanel.add(ajouterButton);
@@ -187,101 +190,4 @@ public class VueAccueil extends JFrame {
         // Pour tester sans utilisateur connecté
         SwingUtilities.invokeLater(() -> new VueAccueil(null));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

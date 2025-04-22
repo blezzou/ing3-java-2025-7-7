@@ -36,9 +36,9 @@ public class ArticleDAO {
         List<Article> articles = new ArrayList<>();
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "");
+            Connection connexion = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "");
             String query = "SELECT * FROM article";
-            Statement statement = connection.createStatement();
+            Statement statement = connexion.createStatement();
             ResultSet rs = statement.executeQuery(query);
 
             while (rs.next()) {
@@ -58,7 +58,7 @@ public class ArticleDAO {
                 System.out.println(a);
             }
 
-            connection.close();
+            connexion.close();
         } catch (SQLException e) {
             System.out.println("Erreur lors du chargement des articles : " + e.getMessage());
             e.printStackTrace();
@@ -67,4 +67,24 @@ public class ArticleDAO {
         return articles;
     }
 
+    public static boolean supprimerArticle(int id) {
+        String sql = "DELETE FROM article WHERE id_article = ?";
+        try (Connection connexion = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "");
+             PreparedStatement pstmt = connexion.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+            int rowsAffected = pstmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Article supprimé avec succès.");
+            } else {
+                System.out.println("Aucun article trouvé avec cet ID.");
+            }
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la suppression de l'article : " + e.getMessage());
+            return false;
+        }
+    }
 }
