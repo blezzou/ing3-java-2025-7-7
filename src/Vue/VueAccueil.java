@@ -55,7 +55,6 @@ public class VueAccueil extends JFrame {
             JButton profilButton = new JButton("Profil");
             buttonsPanel.add(profilButton);
 
-
             profilButton.addActionListener(e -> {
                 new VueProfil(utilisateurConnecte);
                 dispose();
@@ -82,6 +81,7 @@ public class VueAccueil extends JFrame {
         if (utilisateurConnecte != null) {
             for (Article a : articles) {
                 articlesPanel.add(createArticleCard(
+                        a,
                         a.getId(),
                         a.getNom(),
                         a.getImage(),
@@ -100,6 +100,7 @@ public class VueAccueil extends JFrame {
         else {
         for (Article a : articles) {
             articlesPanel.add(createArticleCard(
+                    a,
                     a.getId(),
                     a.getNom(),
                     a.getImage(),
@@ -130,7 +131,7 @@ public class VueAccueil extends JFrame {
         setVisible(true);
     }
 
-    private JPanel createArticleCard(int id, String nom, String image, String marque, String description,
+    private JPanel createArticleCard(Article a, int id, String nom, String image, String marque, String description,
                                      float prix, float prix_vrac, int quantite, int quantite_vrac, int note, int admin) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
@@ -151,6 +152,11 @@ public class VueAccueil extends JFrame {
             JPanel adminButtonsPanel = new JPanel();
             adminButtonsPanel.setLayout(new BoxLayout(adminButtonsPanel, BoxLayout.Y_AXIS));
 
+            JButton voirArticle = new JButton("Voir l'article");
+            voirArticle.addActionListener(e -> {
+                new VueArticle(a);
+            });
+
             JButton ajouterButton = new JButton("Ajouter au panier");
             ajouterButton.addActionListener(e -> {
                 JOptionPane.showMessageDialog(this, "Article ajouté au panier");
@@ -165,22 +171,35 @@ public class VueAccueil extends JFrame {
 
             adminButtonsPanel.add(ajouterButton);
             adminButtonsPanel.add(Box.createRigidArea(new Dimension(0, 5))); // petit espace
+            adminButtonsPanel.add(voirArticle);
+            adminButtonsPanel.add(Box.createRigidArea(new Dimension(0, 5))); // petit espace
             adminButtonsPanel.add(supprimerButton);
 
             card.add(adminButtonsPanel, BorderLayout.EAST);
         } else {
+            JPanel ButtonsPanel = new JPanel();
+            ButtonsPanel.setLayout(new BoxLayout(ButtonsPanel, BoxLayout.Y_AXIS));
             // Si pas admin, juste le bouton Ajouter
+            JButton voirArticle = new JButton("Voir l'article");
+            voirArticle.addActionListener(e -> {
+                new VueArticle(a);
+            });
+
             JButton ajouterButton = new JButton("Ajouter au panier");
             ajouterButton.addActionListener(e -> {
                 JOptionPane.showMessageDialog(this, "Article ajouté au panier");
             });
-            card.add(ajouterButton, BorderLayout.EAST);
+
+            ButtonsPanel.add(ajouterButton);
+            ButtonsPanel.add(Box.createRigidArea(new Dimension(0, 5))); // petit espace
+            ButtonsPanel.add(voirArticle);
+
+            card.add(ButtonsPanel, BorderLayout.EAST);
         }
 
 
         card.add(infoPanel, BorderLayout.WEST);
         card.add(descArea, BorderLayout.CENTER);
-
 
 
         return card;
