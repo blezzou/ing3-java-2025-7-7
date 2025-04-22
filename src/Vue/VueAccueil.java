@@ -7,25 +7,39 @@ import Modele.Article;
 import Modele.Utilisateur;
 import DAO.ArticleDAO;
 
+/**
+ * Vue principale de l'application, affichant la liste des articles disponibles
+ * Gère l'affichage des articles et la navigation vers d'autres vues
+ */
+
 public class VueAccueil extends JFrame {
-    private JPanel headerPanel;
-    private JPanel articlesPanel;
-    private JScrollPane scrollPane;
-    private Utilisateur utilisateurConnecte;
+    private JPanel headerPanel; //Panel pour l'en-t^te avec barre de recherche
+    private JPanel articlesPanel; //Panel pour la liste des articles
+    private JScrollPane scrollPane; //panel avec barre de défilement
+    private Utilisateur utilisateurConnecte; //Référence à l'utilisateur connecté
+
+    /**
+     * Constructeur initialisant la vue d'accueil
+     * @param utilisateur L'utilisateur connecté (null si non connecté)
+     */
 
     public VueAccueil(Utilisateur utilisateur) {
         this.utilisateurConnecte = utilisateur;
+
+        //Configuration de la fenêtre principale
         setTitle("Accueil - Shopping");
         setSize(1000, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(null); //Centre la fenêtre
 
         //System.out.println(utilisateurConnecte);
 
         // Création du conteneur principal
         JPanel mainPanel = new JPanel(new BorderLayout());
 
-        // 1 -> Header avec recherche, panier et profil
+        /* ------------------------- */
+        /* 1. CONFIGURATION DU HEADER */
+        /* ------------------------- */
         headerPanel = new JPanel(new BorderLayout());
 
         // Barre de recherche
@@ -36,19 +50,21 @@ public class VueAccueil extends JFrame {
         searchPanel.add(searchButton);
         headerPanel.add(searchPanel, BorderLayout.CENTER);
 
+        //Gestion de la recherche
         searchButton.addActionListener(e -> {
             String texteRecherche = searchField.getText().trim();
             if (!texteRecherche.isEmpty()) {
-                new VueRecherche(texteRecherche);
-                dispose();
+                new VueRecherche(texteRecherche); //Ouvre la vue de recherche
+                dispose(); //Ferme la vue actuelle
             }
         });
 
-        // Boutons panier et profil/connexion
+        // Boutons de navigation (panier et profil/connexion)
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton panierButton = new JButton("Panier");
         buttonsPanel.add(panierButton);
 
+        // Affichage différent selon si l'utilisateur est connecté
         if (utilisateurConnecte != null) {
             // Mode connecté - bouton Profil
             JButton profilButton = new JButton("Profil");
@@ -72,11 +88,16 @@ public class VueAccueil extends JFrame {
         headerPanel.add(buttonsPanel, BorderLayout.EAST);
         mainPanel.add(headerPanel, BorderLayout.NORTH);
 
-        // 2 -> Zone des articles (scrollable)
+        /* ----------------------------- */
+        /* 2. ZONE DES ARTICLES (SCROLL) */
+        /* ----------------------------- */
         articlesPanel = new JPanel();
         articlesPanel.setLayout(new BoxLayout(articlesPanel, BoxLayout.Y_AXIS));
 
+        //Récupération de tous les articles depuis la BDD
         List<Article> articles = ArticleDAO.getAllArticles();
+
+        //Création des cartes d'articles (affichage différent selon le statut admin)
         if (utilisateurConnecte != null) {
             for (Article a : articles) {
                 articlesPanel.add(createArticleCard(
@@ -94,10 +115,9 @@ public class VueAccueil extends JFrame {
                         utilisateurConnecte,
                         utilisateurConnecte.getAdmin()
                 ));
-                articlesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-            }
-            }
-        else {
+                articlesPanel.add(Box.createRigidArea(new Dimension(0, 10))); //Espace entre les articles
+                }
+            } else {
         for (Article a : articles) {
             articlesPanel.add(createArticleCard(
                     a,
@@ -115,22 +135,42 @@ public class VueAccueil extends JFrame {
                     0
             ));
             articlesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        }
+            }
         }
 
+        //Ajout du scrolling
         scrollPane = new JScrollPane(articlesPanel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Gestion des événements
+        // Gestion du clic sur le bouton Panier
         panierButton.addActionListener(e -> {
             new VuePanier(utilisateur);
             dispose();
         });
 
+        //Finalisation de l'interface
         add(mainPanel);
         setVisible(true);
     }
+
+    /**
+     * Crée une carte visuelle pour un article.
+     * @param a L'article à afficher
+     * @param id Identifiant de l'article
+     * @param nom Nom de l'article
+     * @param image Chemin de l'image
+     * @param marque Marque de l'article
+     * @param description Description de l'article
+     * @param prix Prix unitaire
+     * @param prix_vrac Prix en gros
+     * @param quantite Stock disponible
+     * @param quantite_vrac Quantité pour prix en gros
+     * @param note Note moyenne
+     * @param utilisateur Utilisateur connecté (peut être null)
+     * @param admin Statut admin (1 si admin, 0 sinon)
+     * @return JPanel représentant la carte de l'article
+     */
 
     private JPanel createArticleCard(Article a, int id, String nom, String image, String marque, String description,
                                      float prix, float prix_vrac, int quantite, int quantite_vrac, int note, Utilisateur utilisateur, int admin) {
@@ -138,38 +178,48 @@ public class VueAccueil extends JFrame {
         card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         card.setPreferredSize(new Dimension(900, 150));
 
+        //Panel d'informations (gauche)
         JPanel infoPanel = new JPanel(new GridLayout(3, 1));
         infoPanel.add(new JLabel("Nom: " + nom));
         infoPanel.add(new JLabel("Marque: " + marque));
         infoPanel.add(new JLabel("Prix: " + prix + "€"));
 
+        //Zone de description (centre)
         JTextArea descArea = new JTextArea(description);
         descArea.setEditable(false);
         descArea.setLineWrap(true);
 
+        /* --------------------------------- */
+        /* GESTION DES BOUTONS (DROITE) */
+        /* Différents selon le statut de l'utilisateur */
+        /* --------------------------------- */
         if(utilisateurConnecte != null) {
             if (admin == 1) {
-                // Créer un panel pour empiler les boutons verticalement
+                // Interface ADMIN - plus de boutons
                 JPanel adminButtonsPanel = new JPanel();
                 adminButtonsPanel.setLayout(new BoxLayout(adminButtonsPanel, BoxLayout.Y_AXIS));
 
+                // Bouton Voir l'article
                 JButton voirArticle = new JButton("Voir l'article");
                 voirArticle.addActionListener(e -> {
                     new VueArticle(a, utilisateurConnecte);
                 });
 
+                //Bouton Ajouter au panier
                 JButton ajouterButton = new JButton("Ajouter au panier");
                 ajouterButton.addActionListener(e -> {
                     JOptionPane.showMessageDialog(this, "Article ajouté au panier");
                 });
 
+                //Bouton Supprimer l'article (spécifique aux admins)
                 JButton supprimerButton = new JButton("Supprimer l'article");
                 supprimerButton.addActionListener(e -> {
                     ArticleDAO.supprimerArticle(id);
                     dispose();
-                    new VueAccueil(utilisateurConnecte);
+                    new VueAccueil(utilisateurConnecte); //Rafraîchit la vue
                 });
 
+                //Organisation des boutons
                 adminButtonsPanel.add(ajouterButton);
                 adminButtonsPanel.add(Box.createRigidArea(new Dimension(0, 5))); // petit espace
                 adminButtonsPanel.add(voirArticle);
@@ -178,6 +228,7 @@ public class VueAccueil extends JFrame {
 
                 card.add(adminButtonsPanel, BorderLayout.EAST);
             } else {
+                //Interface UTILISATEUR STANDARD
                 JPanel ButtonsPanel = new JPanel();
                 ButtonsPanel.setLayout(new BoxLayout(ButtonsPanel, BoxLayout.Y_AXIS));
                 // Si pas admin, juste le bouton Ajouter
@@ -197,7 +248,8 @@ public class VueAccueil extends JFrame {
 
                 card.add(ButtonsPanel, BorderLayout.EAST);
             }
-        } else {
+        }else {
+            // INTERFACE VISITEUR NON CONNECTÉ
             JPanel ButtonsPanel = new JPanel();
             ButtonsPanel.setLayout(new BoxLayout(ButtonsPanel, BoxLayout.Y_AXIS));
             // Si pas admin, juste le bouton Ajouter
@@ -208,7 +260,7 @@ public class VueAccueil extends JFrame {
 
             JButton ajouterButton = new JButton("Ajouter au panier");
             ajouterButton.addActionListener(e -> {
-                new VueConnexion();
+                new VueConnexion(); //redirige vers la connexion
             });
 
             ButtonsPanel.add(ajouterButton);
@@ -225,8 +277,11 @@ public class VueAccueil extends JFrame {
         return card;
     }
 
+    /**
+     * Méthode main pour tester la vue indépendamment
+     */
+
     public static void main(String[] args) {
-        // Pour tester sans utilisateur connecté
         SwingUtilities.invokeLater(() -> new VueAccueil(null));
     }
 }
