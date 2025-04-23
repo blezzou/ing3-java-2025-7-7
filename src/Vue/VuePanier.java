@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 public class VuePanier extends JFrame {
+    //Composants de la fenêtre principale
     private JPanel mainPanel;
     private JList<String> articleList;
     private DefaultListModel<String> listModel;
@@ -27,6 +28,7 @@ public class VuePanier extends JFrame {
     private JButton supprimerButton;
     private JButton retourButton;
 
+    //Structures pour stocker les articles et quantités associées
     private Map<Integer, Article> articlesMap;
     private Map<Integer, Integer> quantitesMap;
     private Utilisateur utilisateur;
@@ -40,10 +42,10 @@ public class VuePanier extends JFrame {
 
         setTitle("Panier d'achats");
         setSize(1000, 800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //ferme toute l'app si on clique sur la croix
+        setLocationRelativeTo(null); //centre la fenêtre
 
-        //panel principal
+        //panel principal de la vue panier
         mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
@@ -51,7 +53,7 @@ public class VuePanier extends JFrame {
         JPanel headerPanel = createHeaderPanel();
         mainPanel.add(headerPanel, BorderLayout.NORTH);
 
-        // 2 -> Liste des articles du panier
+        // 2 -> Création de la liste qui affichera les articles du panier
         listModel = new DefaultListModel<>();
         articleList = new JList<>(listModel);
         articleList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -60,20 +62,20 @@ public class VuePanier extends JFrame {
         JScrollPane scrollPane = new JScrollPane(articleList);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // 3 -> Panle inférieur avec total et boutons
+        // 3 -> Panel en bas avec le total et les boutons
         JPanel bottomPanel = new JPanel(new BorderLayout());
 
-        //panel pour les totaux
+        //Affichage du total et de l'économie
         JPanel totalPanel = new JPanel(new GridLayout(2, 1));
         totalLabel = new JLabel("TOTAL : 0.00€");
         totalLabel.setFont(new Font("Arial", Font.BOLD, 18));
         economieLabel = new JLabel("Économie : 0.00€");
-        economieLabel.setForeground(Color.RED);
+        economieLabel.setForeground(Color.RED); //couleur rouge pour l'économie
         totalPanel.add(totalLabel);
         totalPanel.add(economieLabel);
         bottomPanel.add(totalPanel, BorderLayout.CENTER);
 
-        //Panel pour les boutons
+        //Panel pour les boutons pour les actions
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         supprimerButton = new JButton("Supprimer");
         validerButton = new JButton("Payer");
@@ -86,12 +88,12 @@ public class VuePanier extends JFrame {
 
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        //GEstion des évènements
+        //listeners pour les boutons
         supprimerButton.addActionListener(e -> supprimerArticle());
         validerButton.addActionListener(e -> validerPaiement());
         retourButton.addActionListener(e -> {
-            new VueAccueil(utilisateur);
-            dispose();
+            new VueAccueil(utilisateur); //retourne à l'accueil
+            dispose(); //ferme la fenêtre actuelle
         });
         add(mainPanel);
         setVisible(true);
@@ -120,7 +122,7 @@ public class VuePanier extends JFrame {
         buttonsPanel.add(profilButton);
         headerPanel.add(buttonsPanel, BorderLayout.EAST);
 
-        //gestion des événements du header
+        //évènements associés aux boutons
         accueilButton.addActionListener(e -> {
             new VueAccueil(utilisateur);
             dispose();
@@ -160,13 +162,13 @@ public class VuePanier extends JFrame {
             articlesMap.put(id, article);
             quantitesMap.put(id, 1);
         }
-        mettreAJourAffichage();
+        mettreAJourAffichage(); //on refresh la vue
     }
 
     private void supprimerArticle() {
         int selectedIndex = articleList.getSelectedIndex();
         if (selectedIndex != -1) {
-            int id = (int) articleList.getSelectedValue().charAt(0); //on stocke l'id dansl e premier caractère
+            int id = (int) articleList.getSelectedValue().charAt(0); //on stocke l'id dans le premier caractère
             articlesMap.remove(id);
             quantitesMap.remove(id);
             mettreAJourAffichage();
@@ -186,7 +188,7 @@ public class VuePanier extends JFrame {
     }
 
     private void mettreAJourAffichage() {
-        listModel.clear();
+        listModel.clear(); //reset liste affichée
         total = 0;
         economie = 0;
 
@@ -249,7 +251,7 @@ public class VuePanier extends JFrame {
 
                 VuePanier vue = new VuePanier(testUser);
                 for (Article a : articles) {
-                    vue.ajouterArticle(a);
+                    vue.ajouterArticle(a); //ajoute tous les articles au panier
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
