@@ -57,7 +57,14 @@ public class VueArticle extends JFrame {
         imageLabel.setPreferredSize(new Dimension(200, 200));
         imageLabel.setHorizontalAlignment(JLabel.CENTER);
         imageLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        imageLabel.setText("[ Image ]"); // Tu peux charger une vraie image si dispo -> ce n'est qu'un placeholder
+        try {
+            ImageIcon icon = new ImageIcon(article.getImage());
+            Image img = icon.getImage().getScaledInstance(200, 520, Image.SCALE_SMOOTH);
+            imageLabel.setIcon(new ImageIcon(img));
+        } catch (Exception e) {
+            imageLabel.setText("Image introuvable");
+            e.printStackTrace();
+        }
 
         // Panel d'informations avec BoxLayout (affichage vertical)
         JPanel infoPanel = new JPanel();
@@ -66,9 +73,12 @@ public class VueArticle extends JFrame {
         //Affichage des propriétés de l'article
         infoPanel.add(new JLabel("Nom : " + article.getNom()));
         infoPanel.add(new JLabel("Marque : " + article.getMarque()));
-        infoPanel.add(new JLabel("Description : " + article.getDescription()));
+        JLabel descriptionLabel = new JLabel("<html><div style='width: 400px;'>Description : "
+                + article.getDescription() + "</div></html>");
+        descriptionLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        infoPanel.add(descriptionLabel);
         infoPanel.add(new JLabel("Prix : " + article.getPrix() + " €"));
-        infoPanel.add(new JLabel("Note : " + article.getNote() + "/5"));
+        infoPanel.add(new JLabel("Note : " + article.getNote() + "/10"));
         infoPanel.add(Box.createRigidArea(new Dimension(0, 20))); //espacement
 
         //section édition réservée aux admins
@@ -174,7 +184,7 @@ public class VueArticle extends JFrame {
      */
 
     private void sauvegarderModifications() {
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "")) {
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/shopping", "root", "")) {
             UtilisateurDAO utilisateurDAO = new UtilisateurDAO(connection);
 
             // Mettre à jour l'objet utilisateur
@@ -195,6 +205,4 @@ public class VueArticle extends JFrame {
             JOptionPane.showMessageDialog(this, "Erreur de connexion à la base de données", "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-
 }
