@@ -57,20 +57,20 @@ INSERT INTO `article` (`id_article`, `nom`, `image`, `marque`, `description`, `p
     (8, 'Maillot de bain pour hommes', 'images_Article/maillotdebainH.jpg', 'Haizid', 'Maillots de Bain Anti-Frottement pour Hommes HAZID - Séchage Rapide, Polyester Extensible & Spandex, Noir avec Lettrage Blanc, Taille Élastique, Lavable en Machine pour la Natation Compétitive & Récréative.', 7.00, 4.50, 30, 15, 3),
     (9, 'Pull', 'images_Article/pull_jinkang.jpg', 'Jinkang', 'Pull en Tricot Ajusté pour Homme - Chaud, Extensible en Polyester avec Motif Géométrique pour Automne/Hiver', 19.50, 12.99, 35, 22, 3),
     (10, 'Tee-Shirt', 'images_Article/tshirt_basic.jpg', 'Basic', 'Tee-shirt basique en coton 100% de coupe standard. Col rond et manches courtes. Matière douce et respirante pour un confort quotidien. Idéal pour toutes les occasions.', 12.90, 8.90, 50, 30, 4),
-    (11, 'Tee-Shirt', 'images_Article/tshirt_uniqlo.avif', 'Uniqlo', 'Tee-shirt uni noir en coton stretch. Coupe légèrement ajustée, résistant au rétrécissement. Lavage facile, parfait pour un look minimaliste.', 14.90, 9.90, 45, 25, 4),
+    (11, 'Tee-Shirt', 'images_Article/tshirt_uniqlo.jpg', 'Uniqlo', 'Tee-shirt uni noir en coton stretch. Coupe légèrement ajustée, résistant au rétrécissement. Lavage facile, parfait pour un look minimaliste.', 14.90, 9.90, 45, 25, 4),
     (12, 'Jean', 'images_Article/jean_levis_501.jpeg', 'Levi\'s', 'Jean classique 501 en denim pur coton. Coupe droite, boutons métalliques et cinq poches. Intemporel et durable pour un style décontracté.', 59.90, 45.00, 35, 20, 5),
-    (13, 'Jean', 'images_Article/jean_h&m.avif', 'H&M', 'Jean slim en denim stretch avec élasthanne. Coupe ajustée mais confortable, ceinture à boucles et fermeture à bouton.', 39.90, 19.90, 40, 25, 3),
-    (14, 'Pull', 'images_Article/pull_zara.webp', 'Zara', 'Pull unicolore en coton doux avec col rond. Coupe oversize pour un style décontracté. Manches longues et ourlet côtelé.', 29.90, 19.90, 30, 18, 4),
-    (15, 'Pull', 'images_Article/pull_mango.avif', 'Mango', 'Pull en laine mérinos avec col en rond. Coupe ajustée, idéal pour superposer ou porter seul. Doux et chaud pour l\'hiver.', 29.90, 29.90, 25, 15, 4),
+    (13, 'Jean', 'images_Article/jean_h&m.jpg', 'H&M', 'Jean slim en denim stretch avec élasthanne. Coupe ajustée mais confortable, ceinture à boucles et fermeture à bouton.', 39.90, 19.90, 40, 25, 3),
+    (14, 'Pull', 'images_Article/pull_zara.jpg', 'Zara', 'Pull unicolore en coton doux avec col rond. Coupe oversize pour un style décontracté. Manches longues et ourlet côtelé.', 29.90, 19.90, 30, 18, 4),
+    (15, 'Pull', 'images_Article/pull_mango.jpg', 'Mango', 'Pull en laine mérinos avec col en rond. Coupe ajustée, idéal pour superposer ou porter seul. Doux et chaud pour l\'hiver.', 29.90, 29.90, 25, 15, 4),
     (16, 'Chemise', 'images_Article/chemise_boss.jpeg', 'Boss', 'Chemise classique en coton poplin. Col classique et coupe slim. Parfaite pour les occasions formelles.', 49.90, 35.00, 20, 12, 4),
     (17, 'Chemise', 'images_Article/chemise_tommy.jpg', 'Tommy Hilfiger', 'Chemise en coton à rayures fines. Col boutonné et poches poitrine. Style décontracté mais soigné pour un look quotidien.', 44.90, 32.00, 22, 14, 4),
     (18, 'Sweat-shirt', 'images_Article/sweat_nike.jpg', 'Nike', 'Sweat-shirt en coton avec capuche, poche kangourou et manches longues. Logo brodé sur la poitrine.', 45.00, 32.00, 28, 17, 4),
-    (19, 'Sweat-shirt', 'images_Article/sweat_adidas.avif', 'Adidas', 'Sweat-shirt uni en coton doux. Col rond et manches longues. Logo imprimé discret. Coupe confortable pour un style sportif.', 39.90, 29.90, 30, 18, 4),
+    (19, 'Sweat-shirt', 'images_Article/sweat_adidas.jpg', 'Adidas', 'Sweat-shirt uni en coton doux. Col rond et manches longues. Logo imprimé discret. Coupe confortable pour un style sportif.', 39.90, 29.90, 30, 18, 4),
     (20, 'Veste', 'images_Article/veste_tommy.jpg', 'Tommy Hilfiger', 'Veste en jean classique avec poches avant et boutons pression. Style intemporel pour toutes les saisons.', 49.90, 35.00, 18, 10, 4),
     (21, 'Veste', 'images_Article/veste_columbia.jpg', 'Columbia', 'Veste d\'hiver matelassée avec capuche intégrée. Poches et fermeture à zip. Parfaite pour le froid.', 59.90, 45.00, 15, 9, 4),
     (22, 'Chaussures', 'images_Article/chaussures_converse.jpg', 'Converse', 'Baskets montantes \'All-Star\' en toile avec semelle en caoutchouc. Style intemporel et polyvalent.', 55.00, 42.00, 25, 15, 5),
     (23, 'Chaussures', 'images_Article/chaussures_vans.jpg', 'Vans', 'Baskets noires basses en toile renforcée. Lacets et logo signature.', 65.00, 49.00, 20, 12, 4),
-    (24, 'Short', 'images_Article/short_diesel.webp', 'Diesel', 'Short bleu en denim. Taille normale. Style décontracté pour l\'été.', 39.90, 29.90, 25, 15, 3);
+    (24, 'Short', 'images_Article/short_diesel.jpg', 'Diesel', 'Short bleu en denim. Taille normale. Style décontracté pour l\'été.', 39.90, 29.90, 25, 15, 3);
 COMMIT;
 
 -- --------------------------------------------------------
