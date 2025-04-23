@@ -184,7 +184,7 @@ public class VueArticle extends JFrame {
      */
 
     private void sauvegarderModifications() {
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/shopping", "root", "")) {
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "")) {
             UtilisateurDAO utilisateurDAO = new UtilisateurDAO(connection);
 
             // Mettre à jour l'objet utilisateur
