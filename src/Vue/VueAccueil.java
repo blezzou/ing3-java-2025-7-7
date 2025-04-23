@@ -186,8 +186,10 @@ public class VueAccueil extends JFrame {
 
         //Zone de description (centre)
         JTextArea descArea = new JTextArea(description);
+        descArea.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         descArea.setEditable(false);
         descArea.setLineWrap(true);
+        descArea.setWrapStyleWord(true);
 
         /* --------------------------------- */
         /* GESTION DES BOUTONS (DROITE) */
