@@ -78,7 +78,7 @@ public class VueArticle extends JFrame {
         descriptionLabel.setHorizontalAlignment(SwingConstants.LEFT);
         infoPanel.add(descriptionLabel);
         infoPanel.add(new JLabel("Prix : " + article.getPrix() + " €"));
-        infoPanel.add(new JLabel("Note : " + article.getNote() + "/5"));
+        infoPanel.add(new JLabel("Note : " + article.getNote() + "/10"));
         infoPanel.add(Box.createRigidArea(new Dimension(0, 20))); //espacement
 
         //section édition réservée aux admins
