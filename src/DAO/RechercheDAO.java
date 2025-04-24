@@ -26,14 +26,10 @@ public class RechercheDAO {
             //Requete avec LIKE pour recherche partielle
             String query = "SELECT * FROM article WHERE " +
                     "nom LIKE ? OR " +
-                    "marque LIKE ? OR " +
-                    "CAST(prix AS CHAR) LIKE ? OR " +
-                    "CAST(note AS CHAR) LIKE ?";
+                    "marque LIKE ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, "%" + termeRecherche + "%"); //% pour recherche partielle, nom
             statement.setString(2, "%" + termeRecherche + "%"); // marque
-            statement.setString(3, "%" + termeRecherche + "%"); // prix
-            statement.setString(4, "%" + termeRecherche + "%"); // note
 
             //exécution de la requete
             ResultSet rs = statement.executeQuery();
