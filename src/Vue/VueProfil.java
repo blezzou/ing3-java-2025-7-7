@@ -22,8 +22,18 @@ public class VueProfil extends JFrame {
     //variable pour savoir si on est en mode édition ou pas
     private boolean modeEdition = false;
 
+    //Composants pour l'affichage des infos
+    private JLabel nomLabel, prenomLabel, emailLabel;
+
     public VueProfil(Utilisateur utilisateur) {
         this.utilisateur = utilisateur;
+
+        // Debug: vérifier que l'utilisateur est bien reçu
+        System.out.println("Utilisateur dans VueProfil:");
+        System.out.println("Nom: " + utilisateur.getNom());
+        System.out.println("Prénom: " + utilisateur.getPrenom());
+        System.out.println("Email: " + utilisateur.getEmail());
+
         setTitle("Profil Utilisateur");
         setSize(1000, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -67,9 +77,6 @@ public class VueProfil extends JFrame {
         if (utilisateur.getAdmin() == 1) {
             JButton ajouterUnArticle = new JButton("Ajouter un article");
             // Tu peux ajouter ici un ActionListener si tu veux ouvrir une nouvelle fenêtre
-            contentPanel.add(Box.createRigidArea(new Dimension(0, 10))); // petit espace visuel
-            contentPanel.add(ajouterUnArticle);
-
             ajouterUnArticle.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -77,6 +84,8 @@ public class VueProfil extends JFrame {
                     dispose(); //on ferme celle-ci
                 }
             });
+            contentPanel.add(Box.createRigidArea(new Dimension(0, 10))); // petit espace visuel
+            contentPanel.add(ajouterUnArticle);
         }
 
         // Historique des commandes (pas encore codé mais on prépare le terrain)
@@ -116,18 +125,27 @@ public class VueProfil extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createTitledBorder("Informations personnelles"));
 
-        // Affichage classique des infos
+        //Panel principal qui contiendra les deux modes
+        JPanel contentPanel = new JPanel(new CardLayout());
+
+        // Panel d'affichage (toujours visible)
         JPanel infoDisplayPanel = new JPanel(new GridLayout(4, 2, 10, 10));
         infoDisplayPanel.add(new JLabel("Nom:"));
-        infoDisplayPanel.add(new JLabel(utilisateur.getNom()));
-        infoDisplayPanel.add(new JLabel("Prénom:"));
-        infoDisplayPanel.add(new JLabel(utilisateur.getPrenom()));
-        infoDisplayPanel.add(new JLabel("Email:"));
-        infoDisplayPanel.add(new JLabel(utilisateur.getEmail()));
-        infoDisplayPanel.add(new JLabel("Mot de passe:"));
-        infoDisplayPanel.add(new JLabel("********")); //on masque le mot de passe
+        nomLabel = new JLabel(utilisateur.getNom());
+        infoDisplayPanel.add(nomLabel);
 
-        // Champs pour l'édition (invisibles tant que non activés)
+        infoDisplayPanel.add(new JLabel("Prénom:"));
+        prenomLabel = new JLabel(utilisateur.getPrenom());
+        infoDisplayPanel.add(prenomLabel);
+
+        infoDisplayPanel.add(new JLabel("Email:"));
+        emailLabel = new JLabel(utilisateur.getEmail());
+        infoDisplayPanel.add(emailLabel);
+
+        infoDisplayPanel.add(new JLabel("Mot de passe:"));
+        infoDisplayPanel.add(new JLabel("********"));
+
+        // Panel d'édition (caché par défaut)
         JPanel infoEditPanel = new JPanel(new GridLayout(4, 2, 10, 10));
         nomField = new JTextField(utilisateur.getNom());
         prenomField = new JTextField(utilisateur.getPrenom());
@@ -142,47 +160,49 @@ public class VueProfil extends JFrame {
         infoEditPanel.add(emailField);
         infoEditPanel.add(new JLabel("Nouveau mot de passe:"));
         infoEditPanel.add(motDePasseField);
-        infoEditPanel.setVisible(false);
 
-        // Le bouton pour passer en mode édition ou enregistrer
+        //Ajout des deux panels avec CardLayout
+        contentPanel.add(infoDisplayPanel, "DISPLAY");
+        contentPanel.add(infoEditPanel, "EDIT");
+        panel.add(contentPanel, BorderLayout.CENTER);
+
+        // Bouton de modification
         JButton editButton = new JButton("Modifier les infos");
-        editButton.addActionListener(e -> toggleEditMode(infoDisplayPanel, infoEditPanel, editButton));
+        editButton.addActionListener(e -> {
+            CardLayout cl = (CardLayout) contentPanel.getLayout();
+            if (modeEdition) {
+                // Sauvegarde des modifications
+                utilisateur.setNom(nomField.getText());
+                utilisateur.setPrenom(prenomField.getText());
+                utilisateur.setEmail(emailField.getText());
 
-        panel.add(infoDisplayPanel, BorderLayout.CENTER);
-        panel.add(infoEditPanel, BorderLayout.CENTER);
+                // Mise à jour de l'affichage
+                nomLabel.setText(utilisateur.getNom());
+                prenomLabel.setText(utilisateur.getPrenom());
+                emailLabel.setText(utilisateur.getEmail());
+
+                // Sauvegarde en BDD
+                sauvegarderModifications();
+
+                cl.show(contentPanel, "DISPLAY");
+                editButton.setText("Modifier les infos");
+            } else {
+                cl.show(contentPanel, "EDIT");
+                editButton.setText("Enregistrer");
+            }
+
+            // Bascule entre les modes
+            modeEdition = !modeEdition;
+        });
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        buttonPanel.add(editButton);  // le bouton en bas à droite
+        buttonPanel.add(editButton);
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
         return panel;
     }
 
-    private void toggleEditMode(JPanel displayPanel, JPanel editPanel, JButton button) {
-        //on bascule le mode (édition <-> affichage)
-        modeEdition = !modeEdition;
-
-        if (modeEdition) {
-            //On active les champs de texte
-            displayPanel.setVisible(false);
-            editPanel.setVisible(true);
-            button.setText("Enregistrer");
-        } else {
-            // Sauvegarder les modifications
-            sauvegarderModifications();
-            displayPanel.setVisible(true);
-            editPanel.setVisible(false);
-            button.setText("Modifier les infos");
-
-            // On met à jour l'affichage avec les nouvelles valeurs
-            ((JLabel)displayPanel.getComponent(1)).setText(nomField.getText());
-            ((JLabel)displayPanel.getComponent(3)).setText(prenomField.getText());
-            ((JLabel)displayPanel.getComponent(5)).setText(emailField.getText());
-        }
-    }
-
     private void sauvegarderModifications() {
-        //sauvegarde en base de données
         try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "")) {
             UtilisateurDAO utilisateurDAO = new UtilisateurDAO(connection);
 
@@ -191,13 +211,11 @@ public class VueProfil extends JFrame {
             utilisateur.setPrenom(prenomField.getText());
             utilisateur.setEmail(emailField.getText());
 
-            //Si un mot de passe a été saisi, on l'enregiestre aussi
             String nouveauMdp = new String(motDePasseField.getPassword());
             if (!nouveauMdp.isEmpty()) {
                 utilisateur.setMotDePasse(nouveauMdp);
             }
 
-            // Mettre à jour en BDD
             boolean success = utilisateurDAO.mettreAJourUtilisateur(utilisateur);
 
             if (success) {
@@ -212,21 +230,13 @@ public class VueProfil extends JFrame {
     }
 
     private JPanel createHistoriquePanel() {
-        //panel pour afficher l'historique des commandes (à faire plus tard)
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createTitledBorder("Historique des commandes"));
 
-        // Placeholder pour l'historique (à implémenter)
         JLabel placeholder = new JLabel("Historique des commandes sera affiché ici", SwingConstants.CENTER);
-        placeholder.setForeground(Color.GRAY); //style visuel un peu plus doux
+        placeholder.setForeground(Color.GRAY);
         panel.add(placeholder, BorderLayout.CENTER);
 
         return panel;
-    }
-
-    public static void main(String[] args) {
-        // Pour tester cette vue toute seule
-        Utilisateur testUser = new Utilisateur(1, 0, "Doe", "John", "john@example.com", "mdp123", 0);
-        SwingUtilities.invokeLater(() -> new VueProfil(testUser));
     }
 }
