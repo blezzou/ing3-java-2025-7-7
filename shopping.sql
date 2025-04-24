@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3308
--- Généré le : jeu. 24 avr. 2025 à 17:26
+-- Généré le : jeu. 24 avr. 2025 à 18:32
 -- Version du serveur : 8.2.0
 -- Version de PHP : 8.2.13
 
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `article` (
   `prix_vrac` decimal(10,2) NOT NULL,
   `quantite` int NOT NULL,
   `quantite_vrac` int NOT NULL,
-  `note` int NOT NULL,
+  `note` float NOT NULL,
   PRIMARY KEY (`id_article`)
 ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -50,6 +50,24 @@ INSERT INTO `article` (`id_article`, `nom`, `image`, `marque`, `description`, `p
 (1, 'article 1', '', 'marque 1', 'description 1', 10.00, 5.00, 10, 10, 0),
 (2, 'article 3', '', 'marque 2', 'description 2', 100.00, 50.00, 100, 100, 0),
 (5, 'test', 'test', 'test', 'test', 1.00, 1.00, 1, 1, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `avis`
+--
+
+DROP TABLE IF EXISTS `avis`;
+CREATE TABLE IF NOT EXISTS `avis` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `id_article` int NOT NULL,
+  `id_utilisateur` int NOT NULL,
+  `note` int NOT NULL,
+  `date` date NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_rating` (`id_article`,`id_utilisateur`),
+  KEY `id_utilisateur` (`id_utilisateur`)
+) ;
 
 -- --------------------------------------------------------
 
