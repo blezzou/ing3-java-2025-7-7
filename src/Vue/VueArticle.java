@@ -23,6 +23,7 @@ public class VueArticle extends JFrame {
 
     // Composants d'édition
     private JTextField nomField, marqueField, descriptionField;
+    private JTextField prixField, prix_vraxField, quantiteField, quantite_vraxField, noteField;
     private boolean modeEdition = false; //Etat du mode édition
 
     /**
@@ -46,7 +47,6 @@ public class VueArticle extends JFrame {
         setVisible(true); //Affichage
     }
 
-    //Construit l'interface utilisateur
     private void buildUI() {
         //panel principal avec BorderLayout et marges
         JPanel mainPanel = new JPanel(new BorderLayout(20, 20));
@@ -90,7 +90,12 @@ public class VueArticle extends JFrame {
             nomField = new JTextField(article.getNom());
             marqueField = new JTextField(article.getMarque());
             descriptionField = new JTextField(article.getDescription());
-            //prixField = new J(article.getPrix());
+            prixField = new JTextField(String.valueOf(article.getPrix()));
+            prix_vraxField = new JTextField(String.valueOf(article.getPrix_vrac()));
+            quantite_vraxField = new JTextField(String.valueOf(article.getQuantite_vrac()));
+            quantiteField = new JTextField(String.valueOf(article.getQuantite()));
+            noteField = new JTextField(String.valueOf(article.getNote()));
+
 
             //Ajout des composants
             infoEditPanel.add(new JLabel("Nom:"));
@@ -99,6 +104,17 @@ public class VueArticle extends JFrame {
             infoEditPanel.add(marqueField);
             infoEditPanel.add(new JLabel("Description:"));
             infoEditPanel.add(descriptionField);
+            infoEditPanel.add(new JLabel("Prix (€):"));
+            infoEditPanel.add(prixField);
+            infoEditPanel.add(new JLabel("Prix vrax:"));
+            infoEditPanel.add(prix_vraxField);
+            infoEditPanel.add(new JLabel("Quantite vrax:"));
+            infoEditPanel.add(quantite_vraxField);
+            infoEditPanel.add(new JLabel("Quantite:"));
+            infoEditPanel.add(quantiteField);
+            infoEditPanel.add(new JLabel("Note (/5):"));
+            infoEditPanel.add(noteField);
+
 
             infoEditPanel.setVisible(false); //masqué par défaut
 
@@ -106,9 +122,12 @@ public class VueArticle extends JFrame {
             JButton editButton = new JButton("Modifier les infos");
             editButton.addActionListener(e -> toggleEditMode(infoPanel, infoEditPanel, editButton));
 
+            JPanel adminPanel = new JPanel();
+            adminPanel.setLayout(new BoxLayout(adminPanel, BoxLayout.Y_AXIS));
+            adminPanel.add(editButton);
+            adminPanel.add(infoEditPanel);
 
-
-
+            mainPanel.add(adminPanel, BorderLayout.SOUTH);
         }
 
         //Gestion du panier selon l'état de connexion
@@ -176,6 +195,7 @@ public class VueArticle extends JFrame {
             ((JLabel)displayPanel.getComponent(1)).setText(nomField.getText());
             ((JLabel)displayPanel.getComponent(3)).setText(marqueField.getText());
             ((JLabel)displayPanel.getComponent(5)).setText(descriptionField.getText());
+
         }
     }
 
@@ -185,21 +205,27 @@ public class VueArticle extends JFrame {
 
     private void sauvegarderModifications() {
         try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "")) {
-            UtilisateurDAO utilisateurDAO = new UtilisateurDAO(connection);
+            ArticleDAO articleDAO = new ArticleDAO(connection);
 
-            // Mettre à jour l'objet utilisateur
-            utilisateur.setNom(nomField.getText());
-            utilisateur.setPrenom(marqueField.getText());
-            utilisateur.setEmail(descriptionField.getText());
-/*
+            // Mettre à jour l'objet article
+            article.setNom(nomField.getText());
+            article.setMarque(marqueField.getText());
+            article.setDescription(descriptionField.getText());
+            article.setPrix(Float.parseFloat(prixField.getText()));
+            article.setPrix_vrac(Float.parseFloat(prix_vraxField.getText()));
+            article.setQuantite_vrac(Integer.parseInt(quantiteField.getText()));
+            article.setQuantite(Integer.parseInt(quantiteField.getText()));
+            article.setNote(Integer.parseInt(noteField.getText()));
+
+
             // Mettre à jour en BDD
-            boolean success = ArticleDAO.mettreAJourArticle(article);
+            boolean success = articleDAO.mettreAJourArticle(article);
 
             if (success) {
                 JOptionPane.showMessageDialog(this, "Modifications enregistrées avec succès !");
             } else {
                 JOptionPane.showMessageDialog(this, "Erreur lors de la mise à jour", "Erreur", JOptionPane.ERROR_MESSAGE);
-            }*/
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Erreur de connexion à la base de données", "Erreur", JOptionPane.ERROR_MESSAGE);

@@ -26,21 +26,13 @@ public class Utilisateur {
     }
 
     //setters
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
+    public void setNom(String nom) {this.nom = nom;}
 
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
-    }
+    public void setPrenom(String prenom) {this.prenom = prenom;}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public void setEmail(String email) {this.email = email;}
 
-    public void setMotDePasse(String motDePasse) {
-        this.MotDePasse = motDePasse;
-    }
+    public void setMotDePasse(String motDePasse) {this.MotDePasse = motDePasse;}
 
     //getters
     public int getIdUtilisateur() {return idUtilisateur;}

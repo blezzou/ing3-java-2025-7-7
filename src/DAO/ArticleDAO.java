@@ -120,17 +120,24 @@ public class ArticleDAO {
     }
 
     public boolean mettreAJourArticle(Article article) {
-        String sql = "UPDATE article SET nom=?, marque=?, description=? WHERE id_article=?";
+        String sql = "UPDATE article SET nom=?, image=?, marque=?, description=?, prix=?, prix_vrac=?, quantite_vrac=?, quantite=?, note=? WHERE id_article=?";
         try (PreparedStatement stmt = connexion.prepareStatement(sql)) {
             stmt.setString(1, article.getNom());
-            stmt.setString(2, article.getMarque());
-            stmt.setString(3, article.getDescription());
-            return stmt.executeUpdate() > 0;
+            stmt.setString(2, article.getImage());
+            stmt.setString(3, article.getMarque());
+            stmt.setString(4, article.getDescription());
+            stmt.setFloat(5, article.getPrix());
+            stmt.setFloat(6, article.getPrix_vrac());
+            stmt.setInt(7, article.getQuantite_vrac());
+            stmt.setInt(8, article.getQuantite());
+            stmt.setInt(9, article.getNote());
+            stmt.setInt(10, article.getId());
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
-
 
 }

@@ -27,6 +27,19 @@ public class Article {
         this.note = note;
     }
 
+    //settrs
+    public void setId(int id) {this.id = id;}
+    public void setNom(String nom) {this.nom = nom;}
+    public void setImage(String image) {this.image = image;}
+    public void setMarque(String marque) {this.marque = marque;}
+    public void setDescription(String description) {this.description = description;}
+    public void setPrix(float prix) {this.prix = prix;}
+    public void setPrix_vrac(float prix_vrac) {this.prix_vrac = prix_vrac;}
+    public void setQuantite_vrac(int quantite_vrac) {this.quantite_vrac = quantite_vrac;}
+    public void setQuantite(int quantite) {this.quantite = quantite;}
+    public void setNote(int note) {this.note = note;}
+
+
     //getters
     public int getId() {return id;}
     public String getNom() {return nom;}
