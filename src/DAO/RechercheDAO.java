@@ -17,16 +17,23 @@ public class RechercheDAO {
      * @return Liste des articles correspondants
      */
 
-    public static List<Article> rechercherArticlesParNom(String termeRecherche) {
+    public static List<Article> rechercherArticles(String termeRecherche) {
         List<Article> articlesTrouves = new ArrayList<>();
 
         try {
             //Connexion à la BDD
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "");
             //Requete avec LIKE pour recherche partielle
-            String query = "SELECT * FROM article WHERE nom LIKE ?";
+            String query = "SELECT * FROM article WHERE " +
+                    "nom LIKE ? OR " +
+                    "marque LIKE ? OR " +
+                    "CAST(prix AS CHAR) LIKE ? OR " +
+                    "CAST(note AS CHAR) LIKE ?";
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, "%" + termeRecherche + "%"); //% pour recherche partielle
+            statement.setString(1, "%" + termeRecherche + "%"); //% pour recherche partielle, nom
+            statement.setString(2, "%" + termeRecherche + "%"); // marque
+            statement.setString(3, "%" + termeRecherche + "%"); // prix
+            statement.setString(4, "%" + termeRecherche + "%"); // note
 
             //exécution de la requete
             ResultSet rs = statement.executeQuery();
