@@ -9,6 +9,7 @@ import java.util.Map;
 import Modele.Article;
 import Modele.Utilisateur;
 import DAO.ArticleDAO;
+import DAO.PanierDAO;
 
 /**
  * Vue principale de l'application, affichant la liste des articles disponibles
@@ -154,6 +155,7 @@ public class VueAccueil extends JFrame {
             dispose();
         });
 
+
         //Finalisation de l'interface
         add(mainPanel);
         setVisible(true);
@@ -217,13 +219,7 @@ public class VueAccueil extends JFrame {
                 //Bouton Ajouter au panier
                 JButton ajouterButton = new JButton("Ajouter au panier");
                 ajouterButton.addActionListener(e -> {
-                    if (!panierArticles.containsKey(a.getId())) {
-                        panierArticles.put(a.getId(), a);
-                        panierQuantites.put(a.getId(), 1);
-                    } else {
-                        panierQuantites.put(a.getId(), panierQuantites.get(a.getId()) + 1);
-                    }
-                    JOptionPane.showMessageDialog(this, "Article ajouté au panier !");
+                    ajouterArticleAuPanier(a);
                 });
 
                 //Bouton Supprimer l'article (spécifique aux admins)
@@ -254,9 +250,7 @@ public class VueAccueil extends JFrame {
 
                 JButton ajouterButton = new JButton("Ajouter au panier");
                 ajouterButton.addActionListener(e -> {
-                    VuePanier panier = new VuePanier(utilisateurConnecte, panierArticles, panierQuantites);
-                    panier.ajouterArticle(a);
-                    JOptionPane.showMessageDialog(this, "Article ajouté au panier");
+                    ajouterArticleAuPanier(a);
                 });
 
 
@@ -293,6 +287,18 @@ public class VueAccueil extends JFrame {
 
 
         return card;
+    }
+
+    private void ajouterArticleAuPanier(Article a) {
+        if (utilisateurConnecte != null) {
+            int panierId = PanierDAO.getOrCreatePanierId(utilisateurConnecte.getIdUtilisateur());
+            PanierDAO.ajouterArticleDansPanier(panierId, a.getId(), 1);
+
+            JOptionPane.showMessageDialog(this, "Article ajouté au panier !");
+        } else {
+            JOptionPane.showMessageDialog(this, "Veuillez vous connecter pour ajouter des articles au panier.");
+            new VueConnexion();
+        }
     }
 
     /**
