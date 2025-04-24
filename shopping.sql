@@ -71,7 +71,7 @@ INSERT INTO `article` (`id_article`, `nom`, `image`, `marque`, `description`, `p
     (22, 'Chaussures', 'images_Article/chaussures_converse.jpg', 'Converse', 'Baskets montantes \'All-Star\' en toile avec semelle en caoutchouc. Style intemporel et polyvalent.', 55.00, 42.00, 25, 15, 5),
     (23, 'Chaussures', 'images_Article/chaussures_vans.jpg', 'Vans', 'Baskets noires basses en toile renforcée. Lacets et logo signature.', 65.00, 49.00, 20, 12, 4),
     (24, 'Short', 'images_Article/short_diesel.jpg', 'Diesel', 'Short bleu en denim. Taille normale. Style décontracté pour l\'été.', 39.90, 29.90, 25, 15, 3),
-    (25, 'Pantalon', 'images_Article/pantalon_celio.jpg', 'Celio', 'Conçu dans un tissu résistant et confortable (coton, stretch, ou autre matière selon modèle), ce pantalon assure une coupe moderne et une liberté de mouvement au quotidien.', 53.80, 41.00, 38, 23, 5),
+    (25, 'Pantalon', 'images_Article/pantalon_celio.jpg', 'Celio', 'Conçu dans un tissu résistant et confortable (coton, stretch), ce pantalon assure une coupe moderne et une liberté de mouvement au quotidien.', 53.80, 41.00, 38, 23, 5),
     (26, 'Bonnet', 'images_Article/bonnet_stetson.jpg', 'Stetson', 'Fabriqué avec des matériaux premium, ce couvre-chef allie durabilité, confort et un style unique pour les amateurs de mode roots ou les adeptes d''un look vintage raffiné.', 6.59, 4.67, 45, 38, 3),
     (27, 'Casquette', 'images_Article/casquette_sweetPants.jpg', 'Sweet-Pants', 'Parfaite pour compléter vos tenues décontractées ou sportives, cette casquette allie look tendance et qualité pour un style affirmé au quotidien.', 10.00, 6.50, 28, 19, 4),
     (28, 'Sandalettes', 'images_Article/sandalette_gabor.jpg', 'Gabor', 'Idéales pour les beaux jours, ces sandales féminines offrent une morphologie étudiée et des matières haut de gamme pour un look chic et décontracté, en ville comme en vacances.', 65.00, 48.90, 30, 20, 4),
@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
 --
 
 INSERT INTO `utilisateur` (`id_utilisateur`, `admin`, `nom`, `prenom`, `email`, `mot_de_passe`, `historique`) VALUES
-(1, 0, 'Nicolas', 'Pellerin', 'nicolas@gmail.com', 'azerty', 0),
+(1, 1, 'Nicolas', 'Pellerin', 'nicolas@gmail.com', 'azerty', 0),
 (3, 0, 'aaa', 'aaa', 'nicolas@gmail.com', 'aa', 0);
 COMMIT;
 
