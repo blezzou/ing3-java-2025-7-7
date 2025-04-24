@@ -42,7 +42,7 @@ public class ArticleDAO {
             stmt.setFloat(6, Article.getPrix_vrac());
             stmt.setInt(7, Article.getQuantite());
             stmt.setInt(8, Article.getQuantite_vrac());
-            stmt.setInt(9, Article.getNote());
+            stmt.setFloat(9, Article.getNote());
 
             //exécution de la requete
             int rowsInserted = stmt.executeUpdate();
@@ -82,7 +82,7 @@ public class ArticleDAO {
                 float prix_vrac = rs.getFloat("prix_vrac");
                 int quantite = rs.getInt("quantite");
                 int quantite_vrac = rs.getInt("quantite_vrac");
-                int note = rs.getInt("note");
+                float note = rs.getFloat("note");
 
                 Article a = new Article(id, nom, image, marque, description, prix, prix_vrac, quantite, quantite_vrac, note);
                 articles.add(a);
@@ -100,7 +100,7 @@ public class ArticleDAO {
 
     public static boolean supprimerArticle(int id) {
         String sql = "DELETE FROM article WHERE id_article = ?";
-        try (Connection connexion = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "");
+        try (Connection connexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/shopping", "root", "");
              PreparedStatement pstmt = connexion.prepareStatement(sql)) {
 
             pstmt.setInt(1, id);
@@ -130,7 +130,7 @@ public class ArticleDAO {
             stmt.setFloat(6, article.getPrix_vrac());
             stmt.setInt(7, article.getQuantite_vrac());
             stmt.setInt(8, article.getQuantite());
-            stmt.setInt(9, article.getNote());
+            stmt.setFloat(9, article.getNote());
             stmt.setInt(10, article.getId());
             int rowsUpdated = stmt.executeUpdate();
             return rowsUpdated > 0;
@@ -139,5 +139,4 @@ public class ArticleDAO {
             return false;
         }
     }
-
 }
