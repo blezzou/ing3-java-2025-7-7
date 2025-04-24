@@ -2,6 +2,8 @@ package Vue;
 
 import javax.swing.*;
 import java.awt.*;
+
+import Modele.Article;
 import Modele.Utilisateur;
 import DAO.UtilisateurDAO;
 
@@ -10,8 +12,14 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class VueProfil extends JFrame {
+
+    private Map<Integer, Article> panierArticles = new HashMap<>();
+    private Map<Integer, Integer> panierQuantites = new HashMap<>();
+
     //L'utilisateur actuellement connecté
     private Utilisateur utilisateur;
 
@@ -103,7 +111,7 @@ public class VueProfil extends JFrame {
         });
 
         panierButton.addActionListener(e -> {
-            new VuePanier(utilisateur);
+            new VuePanier(utilisateur, panierArticles, panierQuantites);
             dispose();
         });
 

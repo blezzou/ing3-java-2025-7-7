@@ -27,6 +27,7 @@ public class VuePanier extends JFrame {
     private JButton validerButton;
     private JButton supprimerButton;
     private JButton retourButton;
+    private JButton augmenterButton, diminuerButton;
 
     //Structures pour stocker les articles et quantités associées
     private Map<Integer, Article> articlesMap;
@@ -35,10 +36,10 @@ public class VuePanier extends JFrame {
     private float total = 0;
     private float economie = 0;
 
-    public VuePanier(Utilisateur utilisateur) {
+    public VuePanier(Utilisateur utilisateur, Map<Integer, Article> articlesMap, Map<Integer, Integer> quantitesMap) {
         this.utilisateur = utilisateur;
-        this.articlesMap = new HashMap<>();
-        this.quantitesMap = new HashMap<>();
+        this.articlesMap = articlesMap != null ? articlesMap : new HashMap<>();
+        this.quantitesMap = quantitesMap != null ? quantitesMap : new HashMap<>();
 
         setTitle("Panier d'achats");
         setSize(1000, 800);
@@ -80,13 +81,22 @@ public class VuePanier extends JFrame {
         supprimerButton = new JButton("Supprimer");
         validerButton = new JButton("Payer");
         retourButton = new JButton("Retour à l'accueil");
+        augmenterButton = new JButton("+");
+        diminuerButton = new JButton("-");
 
+        buttonsPanel.add(diminuerButton);
+        buttonsPanel.add(augmenterButton);
         buttonsPanel.add(supprimerButton);
         buttonsPanel.add(validerButton);
         buttonsPanel.add(retourButton);
+
         mainPanel.add(buttonsPanel, BorderLayout.SOUTH);
 
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+
+        //Ajoutez les listeners
+        augmenterButton.addActionListener(e -> modifierQuantite(1));
+        diminuerButton.addActionListener(e -> modifierQuantite(-1));
 
         //listeners pour les boutons
         supprimerButton.addActionListener(e -> supprimerArticle());
@@ -136,7 +146,7 @@ public class VuePanier extends JFrame {
         });
 
         panierButton.addActionListener(e -> {
-            new VuePanier(utilisateur);
+            new VuePanier(utilisateur, articlesMap, quantitesMap);
             dispose();
         });
 
@@ -145,6 +155,29 @@ public class VuePanier extends JFrame {
             dispose();
         });
         return headerPanel;
+    }
+
+    private void modifierQuantite(int delta) {
+        int selectedIndex = articleList.getSelectedIndex();
+        if (selectedIndex != -1) {
+            String selectedValue = articleList.getSelectedValue();
+            int id = Integer.parseInt(selectedValue.split("-")[0]);
+            Article article = articlesMap.get(id);
+            int nouvelleQuantite = quantitesMap.get(id) + delta;
+
+            if (nouvelleQuantite > 0 && nouvelleQuantite <= article.getQuantite()) {
+                quantitesMap.put(id, nouvelleQuantite);
+                mettreAJourAffichage();
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Quantite invalide (min : 1, max " + article.getQuantite() + ")",
+                        "Erreur", JOptionPane.WARNING_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Veuillez sélectionner un article",
+                    "Erreur", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     public void ajouterArticle(Article article) {
@@ -206,9 +239,9 @@ public class VuePanier extends JFrame {
             economie += (prixNormal - prixArticle);
 
             // Ajout à la liste
-            String affichage = id + " - " + article.getNom() + " (" + article.getMarque() + ") - " +
-                    quantite + " x " + String.format("%.2f€", article.getPrix()) +
-                    " = " + String.format("%.2f€", prixArticle);
+            String affichage = String.format("%d - %s (%s) - %d x %.2f€ = %.2f€",
+                    id, article.getNom(), article.getMarque(),
+                    quantite, article.getPrix(), prixArticle);
             listModel.addElement(affichage);
         }
         totalLabel.setText("TOTAL : " + String.format("%2f€", total));
@@ -219,8 +252,8 @@ public class VuePanier extends JFrame {
         if (article.getQuantite_vrac() > 0 && quantite >= article.getQuantite_vrac()) {
             int nbVrac = quantite / article.getQuantite_vrac();
             int reste = quantite % article.getQuantite_vrac();
-            return nbVrac * article.getQuantite_vrac() + reste * article.getPrix();
-        }else {
+            return (nbVrac * article.getPrix_vrac()) + (reste * article.getPrix());
+        } else {
             return quantite * article.getPrix();
         }
     }
@@ -241,21 +274,5 @@ public class VuePanier extends JFrame {
             //
             return this;
         }
-    }
-    public static void main(String[] args) {
-        // Pour tester la vue indépendamment
-        SwingUtilities.invokeLater(() -> {
-            try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "")) {
-                List<Article> articles = ArticleDAO.getAllArticles();
-                Utilisateur testUser = new Utilisateur(1, 0, "Test", "User", "test@test.com", "mdp", 0);
-
-                VuePanier vue = new VuePanier(testUser);
-                for (Article a : articles) {
-                    vue.ajouterArticle(a); //ajoute tous les articles au panier
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
     }
 }

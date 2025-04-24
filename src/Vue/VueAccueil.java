@@ -2,7 +2,10 @@ package Vue;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import Modele.Article;
 import Modele.Utilisateur;
 import DAO.ArticleDAO;
@@ -13,10 +16,12 @@ import DAO.ArticleDAO;
  */
 
 public class VueAccueil extends JFrame {
-    private JPanel headerPanel; //Panel pour l'en-t^te avec barre de recherche
+    private JPanel headerPanel; //Panel pour l'en-tête avec barre de recherche
     private JPanel articlesPanel; //Panel pour la liste des articles
     private JScrollPane scrollPane; //panel avec barre de défilement
     private Utilisateur utilisateurConnecte; //Référence à l'utilisateur connecté
+    private Map<Integer, Article> panierArticles = new HashMap<>();
+    private Map<Integer, Integer> panierQuantites = new HashMap<>();
 
     /**
      * Constructeur initialisant la vue d'accueil
@@ -145,7 +150,7 @@ public class VueAccueil extends JFrame {
 
         // Gestion du clic sur le bouton Panier
         panierButton.addActionListener(e -> {
-            new VuePanier(utilisateur);
+            new VuePanier(utilisateurConnecte, panierArticles, panierQuantites);
             dispose();
         });
 
@@ -173,7 +178,8 @@ public class VueAccueil extends JFrame {
      */
 
     private JPanel createArticleCard(Article a, int id, String nom, String image, String marque, String description,
-                                     float prix, float prix_vrac, int quantite, int quantite_vrac, int note, Utilisateur utilisateur, int admin) {
+                                     float prix, float prix_vrac, int quantite, int quantite_vrac, int note,
+                                     Utilisateur utilisateur, int admin) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         card.setPreferredSize(new Dimension(900, 150));
@@ -210,7 +216,13 @@ public class VueAccueil extends JFrame {
                 //Bouton Ajouter au panier
                 JButton ajouterButton = new JButton("Ajouter au panier");
                 ajouterButton.addActionListener(e -> {
-                    JOptionPane.showMessageDialog(this, "Article ajouté au panier");
+                    if (!panierArticles.containsKey(a.getId())) {
+                        panierArticles.put(a.getId(), a);
+                        panierQuantites.put(a.getId(), 1);
+                    } else {
+                        panierQuantites.put(a.getId(), panierQuantites.get(a.getId()) + 1);
+                    }
+                    JOptionPane.showMessageDialog(this, "Article ajouté au panier !");
                 });
 
                 //Bouton Supprimer l'article (spécifique aux admins)
@@ -241,8 +253,11 @@ public class VueAccueil extends JFrame {
 
                 JButton ajouterButton = new JButton("Ajouter au panier");
                 ajouterButton.addActionListener(e -> {
+                    VuePanier panier = new VuePanier(utilisateurConnecte, panierArticles, panierQuantites);
+                    panier.ajouterArticle(a);
                     JOptionPane.showMessageDialog(this, "Article ajouté au panier");
                 });
+
 
                 ButtonsPanel.add(ajouterButton);
                 ButtonsPanel.add(Box.createRigidArea(new Dimension(0, 5))); // petit espace
