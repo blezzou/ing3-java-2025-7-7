@@ -122,25 +122,25 @@ public class VueAccueil extends JFrame {
                         utilisateurConnecte.getAdmin()
                 ));
                 articlesPanel.add(Box.createRigidArea(new Dimension(0, 10))); //Espace entre les articles
-                }
-            } else {
-        for (Article a : articles) {
-            articlesPanel.add(createArticleCard(
-                    a,
-                    a.getId(),
-                    a.getNom(),
-                    a.getImage(),
-                    a.getMarque(),
-                    a.getDescription(),
-                    a.getPrix(),
-                    a.getPrix_vrac(),
-                    a.getQuantite(),
-                    a.getQuantite_vrac(),
-                    a.getNote(),
-                    utilisateurConnecte,
-                    0
-            ));
-            articlesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+            }
+        } else {
+            for (Article a : articles) {
+                articlesPanel.add(createArticleCard(
+                        a,
+                        a.getId(),
+                        a.getNom(),
+                        a.getImage(),
+                        a.getMarque(),
+                        a.getDescription(),
+                        a.getPrix(),
+                        a.getPrix_vrac(),
+                        a.getQuantite(),
+                        a.getQuantite_vrac(),
+                        a.getNote(),
+                        utilisateurConnecte,
+                        0
+                ));
+                articlesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
             }
         }
 
@@ -180,7 +180,7 @@ public class VueAccueil extends JFrame {
      */
 
     private JPanel createArticleCard(Article a, int id, String nom, String image, String marque, String description,
-                                     float prix, float prix_vrac, int quantite, int quantite_vrac, int note,
+                                     float prix, float prix_vrac, int quantite, int quantite_vrac, float note,
                                      Utilisateur utilisateur, int admin) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
