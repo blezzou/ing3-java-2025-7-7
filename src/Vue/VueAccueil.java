@@ -187,10 +187,11 @@ public class VueAccueil extends JFrame {
         card.setPreferredSize(new Dimension(900, 150));
 
         //Panel d'informations (gauche)
-        JPanel infoPanel = new JPanel(new GridLayout(3, 1));
+        JPanel infoPanel = new JPanel(new GridLayout(4, 1));
         infoPanel.add(new JLabel("Nom: " + nom));
         infoPanel.add(new JLabel("Marque: " + marque));
         infoPanel.add(new JLabel("Prix: " + prix + "€"));
+        infoPanel.add(new JLabel("Note: " + note + "/5"));
 
         //Zone de description (centre)
         JTextArea descArea = new JTextArea(description);

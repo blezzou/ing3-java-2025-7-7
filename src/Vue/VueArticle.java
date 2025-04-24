@@ -2,14 +2,17 @@ package Vue;
 
 import DAO.UtilisateurDAO;
 import DAO.ArticleDAO;
+import DAO.AvisDAO;
 import Modele.Article;
 import Modele.Utilisateur;
+import Modele.Avis;
 
 import javax.swing.*;
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Vue pour afficher et modifier les détails d'un article
@@ -70,16 +73,26 @@ public class VueArticle extends JFrame {
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
 
+        double noteMoyenne = calculerNoteMoyenne(article.getId());  // Déclaration + calcul
+
         //Affichage des propriétés de l'article
         infoPanel.add(new JLabel("Nom : " + article.getNom()));
         infoPanel.add(new JLabel("Marque : " + article.getMarque()));
+        infoPanel.add(new JLabel("Note moyenne : " + String.format("%.1f", noteMoyenne) + "/5")); // MODIF
+
         JLabel descriptionLabel = new JLabel("<html><div style='width: 400px;'>Description : "
                 + article.getDescription() + "</div></html>");
         descriptionLabel.setHorizontalAlignment(SwingConstants.LEFT);
         infoPanel.add(descriptionLabel);
         infoPanel.add(new JLabel("Prix : " + article.getPrix() + " €"));
-        infoPanel.add(new JLabel("Note : " + article.getNote() + "/5"));
         infoPanel.add(Box.createRigidArea(new Dimension(0, 20))); //espacement
+
+        // Ajout du bouton pour voir les avis
+        JButton voirAvisButton = new JButton("Voir les avis");
+        voirAvisButton.addActionListener(e -> {
+            new VueAvis(article, utilisateur);
+        });
+        infoPanel.add(voirAvisButton);
 
         //section édition réservée aux admins
         if (utilisateur.getAdmin() == 1) {
@@ -166,6 +179,16 @@ public class VueArticle extends JFrame {
         mainPanel.add(infoPanel, BorderLayout.CENTER); //Infos au centre
 
         add(mainPanel); //Ajout du panel principal
+    }
+
+    private double calculerNoteMoyenne(int idArticle) {
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "")) {
+            List<Avis> avisList = new AvisDAO(conn).getAvisParArticle(idArticle);
+            return avisList.stream().mapToInt(Avis::getNote).average().orElse(0);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     /**
