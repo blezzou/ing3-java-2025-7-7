@@ -62,7 +62,7 @@ public class VueRecherche extends JFrame {
         mainPanel.add(headerPanel, BorderLayout.NORTH);
 
         //Recherche les articles correspondant au texte saisi
-        List<Article> resultats = RechercheDAO.rechercherArticlesParNom(texteRecherche);
+        List<Article> resultats = RechercheDAO.rechercherArticles(texteRecherche);
 
         //Si aucun article trouvé
         if (resultats.isEmpty()) {
@@ -126,7 +126,7 @@ public class VueRecherche extends JFrame {
         }
         infoPanel.add(imageLabel);
         infoPanel.add(new JLabel("Marque: " + marque));
-        JLabel descriptionLabel = new JLabel("<html><div style='width: 655px;'>Description : "
+        JLabel descriptionLabel = new JLabel("<html><div style='width: 879px;'>Description : "
                 + description + "</div></html>");
         descriptionLabel.setHorizontalAlignment(SwingConstants.LEFT);
         infoPanel.add(descriptionLabel);
