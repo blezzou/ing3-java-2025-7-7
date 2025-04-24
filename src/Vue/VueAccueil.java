@@ -59,7 +59,7 @@ public class VueAccueil extends JFrame {
         searchButton.addActionListener(e -> {
             String texteRecherche = searchField.getText().trim();
             if (!texteRecherche.isEmpty()) {
-                new VueRecherche(texteRecherche); //Ouvre la vue de recherche
+                new VueRecherche(texteRecherche, utilisateurConnecte); //Ouvre la vue de recherche
                 dispose(); //Ferme la vue actuelle
             }
         });
