@@ -2,147 +2,253 @@ package Vue;
 
 import DAO.RechercheDAO;
 import Modele.Article;
+import Modele.Utilisateur;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-import Modele.Utilisateur;
+import java.util.stream.Collectors;
 
 public class VueRecherche extends JFrame {
     private JPanel resultPanel;
     private JPanel headerPanel;
+    private JPanel filtersPanel;
+    private boolean filtersVisible = false;
+    private List<Article> allResults;
     private Utilisateur utilisateurConnecte;
+
+    // Composants de filtre
+    private JComboBox<Integer> noteCombo;
+    private JTextField prixMinField;
+    private JTextField prixMaxField;
+    private JTextField prix_vracMinField;
+    private JTextField prix_vracMaxField;
+    private JTextField quantiteField;
+    private JTextField quantite_vracField;
 
     public VueRecherche(String texteRecherche, Utilisateur utilisateur) {
         this.utilisateurConnecte = utilisateur;
-        //Définition de la fenêtre
         setTitle("Résultats de recherche pour : " + texteRecherche);
         setSize(1000, 800);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Ferme juste la fenêtre
-        setLocationRelativeTo(null);// centre la fenêtre à l'écran
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
 
-        //panel principal avec un layout en BorderLayout
+        // Panel principal
         JPanel mainPanel = new JPanel(new BorderLayout());
 
-        //Panel qui contiendra les résultats sous forme de liste verticale
-        resultPanel = new JPanel();
-        resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.Y_AXIS));
-
-        //Header contenant la barre de recherche et potentiellement d'autres boutons
+        // Header avec barre de recherche et boutons
         headerPanel = new JPanel(new BorderLayout());
-
-        // Barre de recherche (champ texte + bouton)
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JTextField searchField = new JTextField(30);
+
+        // Barre de recherche
+        JTextField searchField = new JTextField(texteRecherche, 30);
         JButton searchButton = new JButton("Rechercher");
+        JButton optionsButton = new JButton("Options");
+
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
+        searchPanel.add(optionsButton);
         headerPanel.add(searchPanel, BorderLayout.CENTER);
 
-        //Action déclenchée lorsqu'on clique sur le bouton "Rechercher"
+        // Retour à l'accueil
+        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton accueilButton = new JButton("Accueil");
+        buttonsPanel.add(accueilButton);
+        headerPanel.add(buttonsPanel, BorderLayout.EAST);
+
+        // Panel des filtres
+        filtersPanel = createFiltersPanel();
+        filtersPanel.setVisible(false);
+        headerPanel.add(filtersPanel, BorderLayout.SOUTH);
+
+        mainPanel.add(headerPanel, BorderLayout.NORTH);
+
+        // Panel des résultats
+        resultPanel = new JPanel();
+        resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.Y_AXIS));
+        JScrollPane scrollPane = new JScrollPane(resultPanel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+
+        // Chargement initial des résultats
+        allResults = RechercheDAO.rechercherArticles(texteRecherche);
+        displayResults(allResults);
+
+        // Gestion des événements
         searchButton.addActionListener(e -> {
-            String nouveauTexteRecherche = searchField.getText().trim();
-            if (!nouveauTexteRecherche.isEmpty()) {
-                new VueRecherche(nouveauTexteRecherche, utilisateur); //relance une recherche avec le nouveau mot-clé
-                dispose(); //Ferme la fenêtre actuelle
+            String newSearch = searchField.getText().trim();
+            if (!newSearch.isEmpty()) {
+                new VueRecherche(newSearch, utilisateurConnecte);
+                dispose();
             }
         });
 
-        //Placeholder pour d'autres boutons éventuels à droite (ex. accueil, panier...)
-        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        headerPanel.add(buttonsPanel, BorderLayout.EAST);
-        JButton accueilButton = new JButton("Accueil");
+        optionsButton.addActionListener(e -> toggleFilters());
         accueilButton.addActionListener(e -> {
             new VueAccueil(utilisateurConnecte);
             dispose();
         });
-        buttonsPanel.add(accueilButton);
 
-        //On ajoute le header à la partie haute du panel principal
-        mainPanel.add(headerPanel, BorderLayout.NORTH);
+        add(mainPanel);
+        setVisible(true);
+    }
 
-        //Recherche les articles correspondant au texte saisi
-        List<Article> resultats = RechercheDAO.rechercherArticles(texteRecherche);
+    private JPanel createFiltersPanel() {
+        JPanel panel = new JPanel(new GridLayout(0, 2, 10, 5));
+        panel.setBorder(BorderFactory.createTitledBorder("Filtres avancés"));
+        panel.setBackground(new Color(240, 240, 240));
 
-        //Si aucun article trouvé
-        if (resultats.isEmpty()) {
-            resultPanel.add(new JLabel("Aucun article trouvé pour : " + texteRecherche));
+        // Filtre par note
+        JPanel notePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        notePanel.add(new JLabel("Note minimale:"));
+        noteCombo = new JComboBox<>(new Integer[]{0, 1, 2, 3, 4, 5});
+        notePanel.add(noteCombo);
+
+        // Filtre par prix
+        JPanel prixPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        prixPanel.add(new JLabel("Prix entre:"));
+        prixMinField = new JTextField(5);
+        prixMaxField = new JTextField(5);
+        prixPanel.add(prixMinField);
+        prixPanel.add(new JLabel("et"));
+        prixPanel.add(prixMaxField);
+
+        // Filtre par prix vrac
+        JPanel prix_vracPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        prixPanel.add(new JLabel("Prix vrac entre:"));
+        prix_vracMinField = new JTextField(5);
+        prix_vracMaxField = new JTextField(5);
+        prixPanel.add(prix_vracMinField);
+        prixPanel.add(new JLabel("et"));
+        prixPanel.add(prix_vracMaxField);
+
+        // Filtre par quantité
+        JPanel quantitePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        quantitePanel.add(new JLabel("Quantité minimale:"));
+        quantiteField = new JTextField(5);
+        quantitePanel.add(quantiteField);
+
+        // Filtre par quantité vrac
+        JPanel quantite_vracPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        quantitePanel.add(new JLabel("Quantité vrac minimale:"));
+        quantite_vracField = new JTextField(5);
+        quantitePanel.add(quantite_vracField);
+
+        // Boutons
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton applyButton = new JButton("Appliquer");
+        JButton resetButton = new JButton("Réinitialiser");
+
+        applyButton.addActionListener(e -> applyFilters());
+        resetButton.addActionListener(e -> resetFilters());
+
+        buttonPanel.add(applyButton);
+        buttonPanel.add(resetButton);
+
+        panel.add(notePanel);
+        panel.add(prixPanel);
+        panel.add(prix_vracPanel);
+        panel.add(quantitePanel);
+        panel.add(quantite_vracPanel);
+        panel.add(buttonPanel);
+
+        return panel;
+    }
+
+    private void toggleFilters() {
+        filtersVisible = !filtersVisible;
+        filtersPanel.setVisible(filtersVisible);
+        pack();
+    }
+
+    private void applyFilters() {
+        int minNote = (int) noteCombo.getSelectedItem();
+        float minPrix = parseFloat(prixMinField.getText());
+        float maxPrix = parseFloat(prixMaxField.getText());
+        float minPrixVrac = parseFloat(prix_vracMinField.getText());
+        float maxPrixVrac = parseFloat(prix_vracMaxField.getText());
+        int minQuantite = parseInt(quantiteField.getText());
+        int minQuantiteVrac = parseInt(quantite_vracField.getText());
+
+        List<Article> filtered = allResults.stream()
+                .filter(a -> a.getNote() >= minNote)
+                .filter(a -> minPrix == 0 || a.getPrix() >= minPrix)
+                .filter(a -> maxPrix == 0 || a.getPrix() <= maxPrix)
+                .filter(a -> minPrixVrac == 0 || a.getPrix() >= minPrixVrac)
+                .filter(a -> maxPrixVrac == 0 || a.getPrix_vrac() >= maxPrixVrac)
+                .filter(a -> minQuantite == 0 || a.getQuantite() >= minQuantite)
+                .filter(a -> minQuantiteVrac == 0 || a.getQuantite_vrac() >= minQuantiteVrac)
+                .collect(Collectors.toList());
+
+        displayResults(filtered);
+    }
+
+    private void resetFilters() {
+        noteCombo.setSelectedIndex(0);
+        prixMinField.setText("");
+        prixMaxField.setText("");
+        prix_vracMinField.setText("");
+        prix_vracMaxField.setText("");
+        quantiteField.setText("");
+        quantite_vracField.setText("");
+        displayResults(allResults);
+    }
+
+    private void displayResults(List<Article> articles) {
+        resultPanel.removeAll();
+
+        if (articles.isEmpty()) {
+            resultPanel.add(new JLabel("Aucun résultat trouvé"));
         } else {
-            //Pour chaque article trouvé, on crée une "carte" affichage
-            for (Article a : resultats) {
-                resultPanel.add(createArticleCard(
-                        a,
-                        a.getNom(),
-                        a.getImage(),
-                        a.getMarque(),
-                        a.getDescription(),
-                        a.getPrix(),
-                        a.getPrix_vrac(),
-                        a.getQuantite(),
-                        a.getQuantite_vrac(),
-                        a.getNote()
-                ));
-                //Espacement entre les cartes
+            for (Article a : articles) {
+                resultPanel.add(createArticleCard(a));
                 resultPanel.add(Box.createRigidArea(new Dimension(0, 10)));
             }
         }
 
-        //Ajout de la zone de résultats dans une zone scrollable
-        JScrollPane scrollPane = new JScrollPane(resultPanel);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-        //Ajout de la zone scrollable au centre de la fenêtre
-        mainPanel.add(scrollPane, BorderLayout.CENTER);
-
-        //Ajout du panel principal à la fenêtre
-        add(mainPanel);
-        setVisible(true); //affichage de la fenêtre
+        resultPanel.revalidate();
+        resultPanel.repaint();
     }
 
-    /**
-     * Méthode qui crée une "carte" pour un article (non, image, description, prix...)
-     */
-
-    private JPanel createArticleCard(Article a, String nom, String image, String marque, String description, float prix, float prix_vrac, int quantite, int quantite_vrac, int note) {
+    private JPanel createArticleCard(Article a) {
         JPanel card = new JPanel(new BorderLayout());
-        card.setBorder(BorderFactory.createLineBorder(Color.GRAY)); //bordure pour délimiter l'article
-        card.setPreferredSize(new Dimension(900, 150)); //taille fixe de la carte
+        card.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.GRAY),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
+        card.setPreferredSize(new Dimension(900, 150));
 
-        JPanel ButtonsPanel = new JPanel();
-        ButtonsPanel.setLayout(new BoxLayout(ButtonsPanel, BoxLayout.Y_AXIS));
+        // Panel d'informations à gauche
+        JPanel infoPanel = new JPanel(new GridLayout(5, 1, 5, 5));
+        infoPanel.add(new JLabel("Nom: " + a.getNom()));
+        infoPanel.add(new JLabel("Marque: " + a.getMarque()));
+        infoPanel.add(new JLabel(String.format("Prix: %.2f€", a.getPrix())));
+        infoPanel.add(new JLabel(String.format("Prix vrac: %.2f€", a.getPrix_vrac())));
+        infoPanel.add(new JLabel("Stock: " + a.getQuantite() + " unités"));
+        infoPanel.add(new JLabel("Stock vrac: " + a.getQuantite_vrac() + " unités"));
+        JLabel descriptionLabel = new JLabel("<html><div style='width: 250px;'>Description : "
+                + a.getDescription() + "</div></html>");
+        descriptionLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        infoPanel.add(descriptionLabel);
+        infoPanel.add(new JLabel("Note: " + a.getNote() + "/5"));
 
-        //Panel contenant les infos de base à gauche
-        JPanel infoPanel = new JPanel(new GridLayout(6, 0));
-        infoPanel.add(new JLabel("Nom: " + nom));
+        // Image
         JLabel imageLabel = new JLabel();
-        imageLabel.setPreferredSize(new Dimension(100, 100)); // Taille réduite pour s'adapter à la carte
+        imageLabel.setPreferredSize(new Dimension(100, 100));
         try {
-            ImageIcon icon = new ImageIcon(image);
+            ImageIcon icon = new ImageIcon(a.getImage());
             Image img = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
             imageLabel.setIcon(new ImageIcon(img));
         } catch (Exception e) {
-            imageLabel.setText("Image introuvable");
-            e.printStackTrace();
+            imageLabel.setText("Image non disponible");
         }
-        infoPanel.add(imageLabel);
-        infoPanel.add(new JLabel("Marque: " + marque));
-        JLabel descriptionLabel = new JLabel("<html><div style='width: 879px;'>Description : "
-                + description + "</div></html>");
-        descriptionLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        infoPanel.add(descriptionLabel);
-        infoPanel.add(new JLabel("Prix: " + prix + "€"));
-        infoPanel.add(new JLabel("Note: " + note + "/5"));
 
-
-        //Zone texte centrale pour afficher la description complète
-        JTextArea descArea = new JTextArea(description);
-        descArea.setEditable(false);
-        descArea.setLineWrap(true); //retour automatique à la ligne
-
-        //Bouton pour ajouter l'article au panier
+        // Panel des boutons à droite
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 5, 5));
+        JButton voirButton = new JButton("Voir l'article");
         JButton ajouterButton = new JButton("Ajouter au panier");
-        JButton voirArticle = new JButton("Voir l'article");
-        voirArticle.addActionListener(e -> {
+
+        voirButton.addActionListener(e -> {
             new VueArticle(a, utilisateurConnecte);
         });
 
@@ -150,15 +256,33 @@ public class VueRecherche extends JFrame {
             JOptionPane.showMessageDialog(this, "Article ajouté au panier");
         });
 
-        //Ajout des composants à la carte
-        card.add(infoPanel, BorderLayout.WEST);
-        card.add(descArea, BorderLayout.CENTER);
-        ButtonsPanel.add(ajouterButton);
-        ButtonsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-        ButtonsPanel.add(voirArticle);
+        buttonPanel.add(voirButton);
+        buttonPanel.add(ajouterButton);
 
-        card.add(ButtonsPanel, BorderLayout.EAST);
+        // Assemblage de la carte
+        JPanel leftPanel = new JPanel(new BorderLayout(10, 10));
+        leftPanel.add(imageLabel, BorderLayout.WEST);
+        leftPanel.add(infoPanel, BorderLayout.CENTER);
+
+        card.add(leftPanel, BorderLayout.CENTER);
+        card.add(buttonPanel, BorderLayout.EAST);
 
         return card;
+    }
+
+    private float parseFloat(String text) {
+        try {
+            return Float.parseFloat(text);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    private int parseInt(String text) {
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 }
