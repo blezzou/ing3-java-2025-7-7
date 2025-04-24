@@ -71,6 +71,7 @@ public class VueRecherche extends JFrame {
             //Pour chaque article trouvé, on crée une "carte" affichage
             for (Article a : resultats) {
                 resultPanel.add(createArticleCard(
+                        a,
                         a.getNom(),
                         a.getImage(),
                         a.getMarque(),
@@ -102,10 +103,13 @@ public class VueRecherche extends JFrame {
      * Méthode qui crée une "carte" pour un article (non, image, description, prix...)
      */
 
-    private JPanel createArticleCard(String nom, String image, String marque, String description, float prix, float prix_vrac, int quantite, int quantite_vrac, int note) {
+    private JPanel createArticleCard(Article a, String nom, String image, String marque, String description, float prix, float prix_vrac, int quantite, int quantite_vrac, int note) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBorder(BorderFactory.createLineBorder(Color.GRAY)); //bordure pour délimiter l'article
         card.setPreferredSize(new Dimension(900, 150)); //taille fixe de la carte
+
+        JPanel ButtonsPanel = new JPanel();
+        ButtonsPanel.setLayout(new BoxLayout(ButtonsPanel, BoxLayout.Y_AXIS));
 
         //Panel contenant les infos de base à gauche
         JPanel infoPanel = new JPanel(new GridLayout(6, 0));
@@ -137,6 +141,11 @@ public class VueRecherche extends JFrame {
 
         //Bouton pour ajouter l'article au panier
         JButton ajouterButton = new JButton("Ajouter au panier");
+        JButton voirArticle = new JButton("Voir l'article");
+        voirArticle.addActionListener(e -> {
+            new VueArticle(a, utilisateurConnecte);
+        });
+
         ajouterButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "Article ajouté au panier");
         });
@@ -144,7 +153,11 @@ public class VueRecherche extends JFrame {
         //Ajout des composants à la carte
         card.add(infoPanel, BorderLayout.WEST);
         card.add(descArea, BorderLayout.CENTER);
-        card.add(ajouterButton, BorderLayout.EAST);
+        ButtonsPanel.add(ajouterButton);
+        ButtonsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        ButtonsPanel.add(voirArticle);
+
+        card.add(ButtonsPanel, BorderLayout.EAST);
 
         return card;
     }

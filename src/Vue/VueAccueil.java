@@ -201,6 +201,7 @@ public class VueAccueil extends JFrame {
         /* GESTION DES BOUTONS (DROITE) */
         /* Différents selon le statut de l'utilisateur */
         /* --------------------------------- */
+
         if(utilisateurConnecte != null) {
             if (admin == 1) {
                 // Interface ADMIN - plus de boutons
