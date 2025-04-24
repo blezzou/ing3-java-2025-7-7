@@ -6,12 +6,15 @@ import Modele.Article;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import Modele.Utilisateur;
 
 public class VueRecherche extends JFrame {
     private JPanel resultPanel;
     private JPanel headerPanel;
+    private Utilisateur utilisateurConnecte;
 
-    public VueRecherche(String texteRecherche) {
+    public VueRecherche(String texteRecherche, Utilisateur utilisateur) {
+        this.utilisateurConnecte = utilisateur;
         //Définition de la fenêtre
         setTitle("Résultats de recherche pour : " + texteRecherche);
         setSize(1000, 800);
@@ -40,14 +43,20 @@ public class VueRecherche extends JFrame {
         searchButton.addActionListener(e -> {
             String nouveauTexteRecherche = searchField.getText().trim();
             if (!nouveauTexteRecherche.isEmpty()) {
-                new VueRecherche(nouveauTexteRecherche); //relance une recherche avec le nouveau mot-clé
+                new VueRecherche(nouveauTexteRecherche, utilisateur); //relance une recherche avec le nouveau mot-clé
                 dispose(); //Ferme la fenêtre actuelle
             }
         });
 
-        //Placeholder pour d'autres boutons écentuels à droite (ex. accueil, panier...)
+        //Placeholder pour d'autres boutons éventuels à droite (ex. accueil, panier...)
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         headerPanel.add(buttonsPanel, BorderLayout.EAST);
+        JButton accueilButton = new JButton("Accueil");
+        accueilButton.addActionListener(e -> {
+            new VueAccueil(utilisateurConnecte);
+            dispose();
+        });
+        buttonsPanel.add(accueilButton);
 
         //On ajoute le header à la partie haute du panel principal
         mainPanel.add(headerPanel, BorderLayout.NORTH);
@@ -99,12 +108,27 @@ public class VueRecherche extends JFrame {
         card.setPreferredSize(new Dimension(900, 150)); //taille fixe de la carte
 
         //Panel contenant les infos de base à gauche
-        JPanel infoPanel = new JPanel(new GridLayout(3, 1));
+        JPanel infoPanel = new JPanel(new GridLayout(6, 0));
         infoPanel.add(new JLabel("Nom: " + nom));
-        infoPanel.add(new JLabel("Image: " + image)); // peut être remplacé plus tard par une vraie image
+        JLabel imageLabel = new JLabel();
+        imageLabel.setPreferredSize(new Dimension(100, 100)); // Taille réduite pour s'adapter à la carte
+        try {
+            ImageIcon icon = new ImageIcon(image);
+            Image img = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+            imageLabel.setIcon(new ImageIcon(img));
+        } catch (Exception e) {
+            imageLabel.setText("Image introuvable");
+            e.printStackTrace();
+        }
+        infoPanel.add(imageLabel);
         infoPanel.add(new JLabel("Marque: " + marque));
-        infoPanel.add(new JLabel("Description: " + description));
+        JLabel descriptionLabel = new JLabel("<html><div style='width: 655px;'>Description : "
+                + description + "</div></html>");
+        descriptionLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        infoPanel.add(descriptionLabel);
         infoPanel.add(new JLabel("Prix: " + prix + "€"));
+        infoPanel.add(new JLabel("Note: " + note + "/5"));
+
 
         //Zone texte centrale pour afficher la description complète
         JTextArea descArea = new JTextArea(description);
