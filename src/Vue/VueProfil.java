@@ -118,7 +118,7 @@ public class VueProfil extends JFrame {
         searchButton.addActionListener(e -> {
             String texteRecherche = searchField.getText().trim();
             if (!texteRecherche.isEmpty()) {
-                new VueRecherche(texteRecherche);
+                new VueRecherche(texteRecherche, utilisateur);
                 dispose();
             }
         });
