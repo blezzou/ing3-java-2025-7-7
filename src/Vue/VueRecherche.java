@@ -174,8 +174,8 @@ public class VueRecherche extends JFrame {
                 .filter(a -> a.getNote() >= minNote)
                 .filter(a -> minPrix == 0 || a.getPrix() >= minPrix)
                 .filter(a -> maxPrix == 0 || a.getPrix() <= maxPrix)
-                .filter(a -> minPrixVrac == 0 || a.getPrix() >= minPrixVrac)
-                .filter(a -> maxPrixVrac == 0 || a.getPrix_vrac() >= maxPrixVrac)
+                .filter(a -> minPrixVrac == 0 || a.getPrix_vrac() >= minPrixVrac)
+                .filter(a -> maxPrixVrac == 0 || a.getPrix_vrac() <= maxPrixVrac)
                 .filter(a -> minQuantite == 0 || a.getQuantite() >= minQuantite)
                 .filter(a -> minQuantiteVrac == 0 || a.getQuantite_vrac() >= minQuantiteVrac)
                 .collect(Collectors.toList());
