@@ -2,9 +2,7 @@ package Vue;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import Modele.Article;
 import Modele.Utilisateur;
@@ -21,8 +19,6 @@ public class VueAccueil extends JFrame {
     private JPanel articlesPanel; //Panel pour la liste des articles
     private JScrollPane scrollPane; //panel avec barre de défilement
     private Utilisateur utilisateurConnecte; //Référence à l'utilisateur connecté
-    private Map<Integer, Article> panierArticles = new HashMap<>();
-    private Map<Integer, Integer> panierQuantites = new HashMap<>();
 
     /**
      * Constructeur initialisant la vue d'accueil
@@ -151,7 +147,7 @@ public class VueAccueil extends JFrame {
 
         // Gestion du clic sur le bouton Panier
         panierButton.addActionListener(e -> {
-            new VuePanier(utilisateurConnecte, panierArticles, panierQuantites);
+            new VuePanier(utilisateurConnecte);
             dispose();
         });
 
@@ -310,3 +306,5 @@ public class VueAccueil extends JFrame {
         SwingUtilities.invokeLater(() -> new VueAccueil(null));
     }
 }
+
+

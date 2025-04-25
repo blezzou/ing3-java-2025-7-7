@@ -12,22 +12,21 @@ public class PanierDAO {
 
         try {Connection connexion = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "");
             PreparedStatement check = connexion.prepareStatement(
-                    "SELECT id_utilisateur FROM panier WHERE id_utilisateur = ? AND validé = FALSE");
+                    "SELECT id_panier FROM panier WHERE id_utilisateur = ? AND validé = FALSE");
             check.setInt(1, utilisateurId);
             ResultSet rs = check.executeQuery();
 
             if (rs.next()) {
-                return rs.getInt("id"); // Panier déjà existant
+                return rs.getInt("id_panier"); // ✅ Bon ID récupéré
             }
 
             // Sinon on le crée
             PreparedStatement insert = connexion.prepareStatement(
-                    "INSERT INTO panier (id_panier, id_utilisateur, prix, validé, date) VALUES (?, ?, ?, FALSE, ?)",
+                    "INSERT INTO panier (id_utilisateur, prix, validé, date) VALUES (?, ?, FALSE, ?)",
                     Statement.RETURN_GENERATED_KEYS);
-            insert.setInt(2, 1);
             insert.setInt(1, utilisateurId);
-            insert.setDouble(3, 0.0);
-            insert.setDate(4, new java.sql.Date(System.currentTimeMillis()));
+            insert.setInt(2, 0);
+            insert.setDate(3, new java.sql.Date(System.currentTimeMillis()));
             insert.executeUpdate();
 
 
