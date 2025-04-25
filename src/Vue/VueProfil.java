@@ -61,12 +61,15 @@ public class VueProfil extends JFrame {
         searchPanel.add(searchButton);
         headerPanel.add(searchPanel, BorderLayout.CENTER);
 
-        // Les boutons en haut à droite : Panier et Accueil
+        // Les boutons en haut à droite : Panier, Accueil et Se Déconnecter
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton panierButton = new JButton("Panier");
         JButton accueilButton = new JButton("Accueil");
+        JButton logOutButton = new JButton("Se déconnecter");
+
         buttonsPanel.add(panierButton);
         buttonsPanel.add(accueilButton);
+        buttonsPanel.add(logOutButton);
         headerPanel.add(buttonsPanel, BorderLayout.EAST);
 
         mainPanel.add(headerPanel, BorderLayout.NORTH);
@@ -112,6 +115,11 @@ public class VueProfil extends JFrame {
 
         panierButton.addActionListener(e -> {
             new VuePanier(utilisateur);
+            dispose();
+        });
+
+        logOutButton.addActionListener(e -> {
+            new VueConnexion();
             dispose();
         });
 
