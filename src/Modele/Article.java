@@ -27,7 +27,7 @@ public class Article {
         this.note = note;
     }
 
-    //settrs
+    //setters
     public void setId(int id) {this.id = id;}
     public void setNom(String nom) {this.nom = nom;}
     public void setImage(String image) {this.image = image;}
