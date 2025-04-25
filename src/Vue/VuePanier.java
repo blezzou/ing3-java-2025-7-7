@@ -41,7 +41,6 @@ public class VuePanier extends JFrame {
         });
         mainPanel.add(retourButton, BorderLayout.SOUTH);
 
-        // Charger les articles du panier à partir de la base de données
         panierArticles = chargerArticlesDuPanier();
 
         afficherArticles();
@@ -53,7 +52,6 @@ public class VuePanier extends JFrame {
     private List<Article> chargerArticlesDuPanier() {
         List<Article> articles = new ArrayList<>();
 
-        // On récupère l'ID du panier de l'utilisateur
         int panierId = PanierDAO.getOrCreatePanierId(utilisateur.getIdUtilisateur());
 
         try (Connection connexion = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "")) {
@@ -78,7 +76,6 @@ public class VuePanier extends JFrame {
                 int quantite = rs.getInt("quantite");
                 int note = rs.getInt("note");
 
-                // Création de l'objet Article
                 Article article = new Article(
                         idArticle,
                         nom,
@@ -101,7 +98,7 @@ public class VuePanier extends JFrame {
 
 
     private void afficherArticles() {
-        articlesPanel.removeAll(); // Nettoyer avant d'ajouter
+        articlesPanel.removeAll();
 
         if (panierArticles.isEmpty()) {
             articlesPanel.add(new JLabel("Votre panier est vide."));
@@ -131,7 +128,6 @@ public class VuePanier extends JFrame {
     }
 
     private void supprimerArticle(Article article) {
-        // Logique de suppression de l'article du panier (à ajouter)
-        // Par exemple : supprimer de la BDD et rafraîchir l'affichage
+       // a faire
     }
 }
