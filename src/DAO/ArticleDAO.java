@@ -100,7 +100,7 @@ public class ArticleDAO {
 
     public static boolean supprimerArticle(int id) {
         String sql = "DELETE FROM article WHERE id_article = ?";
-        try (Connection connexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/shopping", "root", "");
+        try (Connection connexion = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "");
              PreparedStatement pstmt = connexion.prepareStatement(sql)) {
 
             pstmt.setInt(1, id);
