@@ -94,6 +94,35 @@ public class VueArticle extends JFrame {
         });
         infoPanel.add(voirAvisButton);
 
+
+        // Section notation pour les utilisateurs connectés (non admin)
+        if (utilisateur != null && utilisateur.getAdmin() == 0) {
+            JPanel ratingPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            ratingPanel.add(new JLabel("Donnez une note : "));
+
+            JComboBox<Integer> noteCombo = new JComboBox<>(new Integer[]{1, 2, 3, 4, 5});
+            ratingPanel.add(noteCombo);
+
+            JButton submitButton = new JButton("Valider");
+            submitButton.addActionListener(e -> {
+                int note = (int) noteCombo.getSelectedItem();
+                try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "")) {
+                    new AvisDAO(conn).ajouterAvis(new Avis(
+                            0, article.getId(), utilisateur.getIdUtilisateur(), note, new java.util.Date()
+                    ));
+                    JOptionPane.showMessageDialog(this, "Merci pour votre note !");
+                    dispose();
+                    new VueArticle(article, utilisateur); // Rafraîchit la page
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            });
+
+            ratingPanel.add(submitButton);
+            infoPanel.add(ratingPanel);
+        }
+
+
         //section édition réservée aux admins
         if (utilisateur.getAdmin() == 1) {
             //panel d'édition avec GridLayout

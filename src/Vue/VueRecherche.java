@@ -230,7 +230,7 @@ public class VueRecherche extends JFrame {
                 + a.getDescription() + "</div></html>");
         descriptionLabel.setHorizontalAlignment(SwingConstants.LEFT);
         infoPanel.add(descriptionLabel);
-        infoPanel.add(new JLabel("Note: " + a.getNote() + "/5"));
+        infoPanel.add(new JLabel(String.format("Note: %.1f/5", a.getNote())));
 
         // Image
         JLabel imageLabel = new JLabel();

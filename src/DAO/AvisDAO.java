@@ -19,10 +19,25 @@ public class AvisDAO {
             stmt.setInt(2, avis.getIdUtilisateur());
             stmt.setInt(3, avis.getNote());
             stmt.setDate(4, new java.sql.Date(avis.getDate().getTime()));
-            return stmt.executeUpdate() > 0;
+            boolean success = stmt.executeUpdate() > 0;
+            if (success) {
+                mettreAJourNoteMoyenne(avis.getIdArticle()); // Mise à jour de la note moyenne
+            }
+            return success;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public void mettreAJourNoteMoyenne(int idArticle) {
+        String sql = "UPDATE article SET note = (SELECT AVG(note) FROM avis WHERE id_article = ?) WHERE id_article = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, idArticle);
+            stmt.setInt(2, idArticle);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
