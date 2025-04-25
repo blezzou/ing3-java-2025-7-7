@@ -71,6 +71,7 @@ public class VueConnexion extends JFrame {
                 System.out.println("Tentative de connexion : " + email + " / " + motDePasse);
                 Utilisateur utilisateur = ChercherUtilisateur.ChercherUtilisateur(email, motDePasse);
                 new VueAccueil(utilisateur);
+                dispose();
             }
         });
         setVisible(true);
