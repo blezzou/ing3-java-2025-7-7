@@ -33,13 +33,25 @@ public class VuePanier extends JFrame {
         articlesPanel.setLayout(new BoxLayout(articlesPanel, BoxLayout.Y_AXIS));
         JScrollPane scrollPane = new JScrollPane(articlesPanel);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
+        
+        /*-------------------- Options en bas de page ------------------------*/
+        
+        // Bouton paiement
+        JButton payerButton = new JButton("Payer");
+        payerButton.addActionListener(e -> afficherRecapitulatif());
 
+        // Bouton retour
         JButton retourButton = new JButton("Retour à l'accueil");
         retourButton.addActionListener(e -> {
             new VueAccueil(utilisateur);
             dispose();
         });
-        mainPanel.add(retourButton, BorderLayout.SOUTH);
+
+        JPanel bottomPanel = new JPanel(new GridLayout(2, 1));
+        bottomPanel.add(payerButton);
+        bottomPanel.add(retourButton);
+
+        mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         panierArticles = chargerArticlesDuPanier();
         afficherArticles();
@@ -81,6 +93,8 @@ public class VuePanier extends JFrame {
         }
         return articles;
     }
+    
+    /*---------------- Affichage des articles -----------------*/
 
     private void afficherArticles() {
         articlesPanel.removeAll();
@@ -124,6 +138,7 @@ public class VuePanier extends JFrame {
         articlesPanel.repaint();
     }
 
+    /*----------------------- Supprimer l'article -------------------*/ 
     private void supprimerArticle(ArticlePanier articlePanier) {
         int panierId = PanierDAO.getOrCreatePanierId(utilisateur.getIdUtilisateur());
         int articleId = articlePanier.getArticle().getId();
@@ -136,6 +151,7 @@ public class VuePanier extends JFrame {
                 stmt.setInt(1, panierId);
                 stmt.setInt(2, articleId);
 
+                // Suppression d'un exemplaire
                 if (stmt.executeUpdate() > 0) {
                     articlePanier.setQuantite(articlePanier.getQuantite() - 1);
                     afficherArticles();
@@ -164,6 +180,85 @@ public class VuePanier extends JFrame {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this,
                     "Erreur lors de la suppression: " + e.getMessage(),
+                    "Erreur",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /*------------------- Récapitulatif du paiement ----------------*/
+    
+    private void afficherRecapitulatif() {
+        if (panierArticles.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Votre panier est vide.",
+                    "Panier vide",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        // Création du message de récapitulatif
+        StringBuilder recap = new StringBuilder("<html><h2>Récapitulatif de votre commande</h2><ul>");
+
+        double totalGeneral = 0;
+
+        for (ArticlePanier articlePanier : panierArticles) {
+            Article article = articlePanier.getArticle();
+            double prixTotal = articlePanier.getPrixTotal();
+            totalGeneral += prixTotal;
+
+            recap.append("<li>")
+                    .append(article.getNom())
+                    .append(" - Quantité: ").append(articlePanier.getQuantite())
+                    .append(" - Prix unitaire: ").append(String.format("%.2f", article.getPrix())).append("€")
+                    .append(" - Total: ").append(String.format("%.2f", prixTotal)).append("€")
+                    .append("</li>");
+        }
+
+        recap.append("</ul><b>Total général: ").append(String.format("%.2f", totalGeneral)).append("€</b><br/><br/>");
+
+        // Ajout des boutons de confirmation
+        Object[] options = {"Payer", "Annuler"};
+        int choix = JOptionPane.showOptionDialog(
+                this,
+                recap.toString(),
+                "Confirmation de paiement",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        if (choix == JOptionPane.YES_OPTION) {
+            effectuerPaiement();
+        }
+    }
+
+    /*--------------- Effectuation du paiement -------------*/
+    private void effectuerPaiement() {
+
+        int panierId = PanierDAO.getOrCreatePanierId(utilisateur.getIdUtilisateur());
+
+        try (Connection connexion = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "")) {
+            // Vider complètement le panier
+            String sql = "DELETE FROM panier_article WHERE id_panier = ?";
+            PreparedStatement stmt = connexion.prepareStatement(sql);
+            stmt.setInt(1, panierId);
+            stmt.executeUpdate();
+
+            // Mettre à jour l'affichage
+            panierArticles.clear();
+            afficherArticles();
+
+            JOptionPane.showMessageDialog(this,
+                    "Paiement effectué !",
+                    "Succès",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Erreur lors du paiement: " + e.getMessage(),
                     "Erreur",
                     JOptionPane.ERROR_MESSAGE);
         }
