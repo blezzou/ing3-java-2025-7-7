@@ -187,7 +187,7 @@ public class VueAccueil extends JFrame {
         infoPanel.add(new JLabel("Nom: " + nom));
         infoPanel.add(new JLabel("Marque: " + marque));
         infoPanel.add(new JLabel("Prix: " + prix + "€"));
-        infoPanel.add(new JLabel(String.format("Note: %.1f/5", note)));
+        infoPanel.add(new JLabel("Note: " + note + "/5"));
 
         //Zone de description (centre)
         JTextArea descArea = new JTextArea(description);
