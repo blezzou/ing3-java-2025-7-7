@@ -44,7 +44,7 @@ public class VueAccueil extends JFrame {
         /* ------------------------- */
         headerPanel = new JPanel(new BorderLayout());
 
-        // Barre de recherche
+        // Création de la barre de recherche
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JTextField searchField = new JTextField(30);
         JButton searchButton = new JButton("Rechercher");
@@ -52,7 +52,7 @@ public class VueAccueil extends JFrame {
         searchPanel.add(searchButton);
         headerPanel.add(searchPanel, BorderLayout.CENTER);
 
-        //Gestion de la recherche
+        //Quand on clique sur "Rechercher", on ouvre la vue des résultats
         searchButton.addActionListener(e -> {
             String texteRecherche = searchField.getText().trim();
             if (!texteRecherche.isEmpty()) {
@@ -61,7 +61,7 @@ public class VueAccueil extends JFrame {
             }
         });
 
-        // Boutons de navigation (panier et profil/connexion)
+        // Boutons de navigation (panier et profil/connexion) à droite
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton panierButton = new JButton("Panier");
         buttonsPanel.add(panierButton);
@@ -82,7 +82,7 @@ public class VueAccueil extends JFrame {
             buttonsPanel.add(seConnecterButton);
 
             seConnecterButton.addActionListener(e -> {
-                new VueConnexion();
+                new VueConnexion(); //redirige vers la page de login
                 dispose();
             });
         }
@@ -145,7 +145,7 @@ public class VueAccueil extends JFrame {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Gestion du clic sur le bouton Panier
+        // Gestion du clic sur le bouton Panier, quand on clique sur 'Panier' => ouvre la vue du panier
         panierButton.addActionListener(e -> {
             new VuePanier(utilisateurConnecte);
             dispose();
@@ -258,7 +258,7 @@ public class VueAccueil extends JFrame {
                 card.add(ButtonsPanel, BorderLayout.EAST);
             }
         }else {
-            // INTERFACE VISITEUR NON CONNECTÉ
+            // INTERFACE VISITEUR NON CONNECTÉ => redirige vers connexion au clic
             JPanel ButtonsPanel = new JPanel();
             ButtonsPanel.setLayout(new BoxLayout(ButtonsPanel, BoxLayout.Y_AXIS));
             // Si pas admin, juste le bouton Ajouter
@@ -288,13 +288,14 @@ public class VueAccueil extends JFrame {
 
     private void ajouterArticleAuPanier(Article a) {
         if (utilisateurConnecte != null) {
+            // Ajoute l'article dans le panier BDD
             int panierId = PanierDAO.getOrCreatePanierId(utilisateurConnecte.getIdUtilisateur());
             PanierDAO.ajouterArticleDansPanier(panierId, a.getId(), 1);
 
             JOptionPane.showMessageDialog(this, "Article ajouté au panier !");
         } else {
             JOptionPane.showMessageDialog(this, "Veuillez vous connecter pour ajouter des articles au panier.");
-            new VueConnexion();
+            new VueConnexion(); // Redirige vers login
         }
     }
 
