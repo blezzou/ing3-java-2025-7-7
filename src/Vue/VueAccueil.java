@@ -182,12 +182,32 @@ public class VueAccueil extends JFrame {
         card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         card.setPreferredSize(new Dimension(900, 150));
 
+        // Création d'un panel pour contenir infoPanel et imageLabel côte à côte
+        JPanel leftPanel = new JPanel(new BorderLayout());
+
         //Panel d'informations (gauche)
         JPanel infoPanel = new JPanel(new GridLayout(4, 1));
         infoPanel.add(new JLabel("Nom: " + nom));
         infoPanel.add(new JLabel("Marque: " + marque));
         infoPanel.add(new JLabel("Prix: " + prix + "€"));
         infoPanel.add(new JLabel("Note: " + note + "/5"));
+
+        //Zone image
+        JLabel imageLabel = new JLabel();
+        imageLabel.setHorizontalAlignment(JLabel.CENTER);
+        imageLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        try {
+            ImageIcon icon = new ImageIcon(image);
+            Image img = icon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+            imageLabel.setIcon(new ImageIcon(img));
+        } catch (Exception e) {
+            imageLabel.setText("Image introuvable");
+            e.printStackTrace();
+        }
+
+        // Ajout des composants au leftPanel
+        leftPanel.add(infoPanel, BorderLayout.WEST);
+        leftPanel.add(imageLabel, BorderLayout.CENTER);
 
         //Zone de description (centre)
         JTextArea descArea = new JTextArea(description);
@@ -279,9 +299,8 @@ public class VueAccueil extends JFrame {
             card.add(ButtonsPanel, BorderLayout.EAST);
         }
 
-        card.add(infoPanel, BorderLayout.WEST);
+        card.add(leftPanel, BorderLayout.WEST);
         card.add(descArea, BorderLayout.CENTER);
-
 
         return card;
     }
@@ -298,14 +317,4 @@ public class VueAccueil extends JFrame {
             new VueConnexion(); // Redirige vers login
         }
     }
-
-    /**
-     * Méthode main pour tester la vue indépendamment
-     */
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new VueAccueil(null));
-    }
 }
-
-
