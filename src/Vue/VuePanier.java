@@ -117,6 +117,10 @@ public class VuePanier extends JFrame {
 
                 JButton supprimerButton = new JButton("Supprimer");
                 supprimerButton.addActionListener(e -> {
+                    /* met les boutons en français */
+                    UIManager.put("OptionPane.yesButtonText", "Oui");
+                    UIManager.put("OptionPane.noButtonText", "Non");
+
                     int choix = JOptionPane.showConfirmDialog(
                             this,
                             "Voulez-vous vraiment supprimer cet article ?",
