@@ -108,19 +108,41 @@ public class VuePanier extends JFrame {
                 articlePanel.setPreferredSize(new Dimension(750, 80));
 
                 Article article = articlePanier.getArticle();
-                double prixTotal = articlePanier.getPrixTotal();
+                double prixTotal = (articlePanier.getQuantite()/3) * article.getPrix_vrac() + (articlePanier.getQuantite()%3) * article.getPrix();
 
-                JLabel infoLabel = new JLabel("<html><b>" + article.getNom() + "</b> - " +
-                        "Prix total: " + String.format("%.2f", prixTotal) + "€ (" +
-                        article.getPrix() + "€ × " + articlePanier.getQuantite() + ")</html>");
-                articlePanel.add(infoLabel, BorderLayout.CENTER);
+                // Affichage des articles s'il n'y a pas de vrac (achat en vrac à partir de 3 exemplaires)
+                if(articlePanier.getQuantite() < 3) {
+                    JLabel infoLabel = new JLabel("<html><b>" + article.getNom() + "</b> - " +
+                            "Prix total: " + String.format("%.2f", prixTotal) + "€ (" +
+                            article.getPrix() + "€ × " + articlePanier.getQuantite() + ")</html>");
+                    articlePanel.add(infoLabel, BorderLayout.CENTER);
+                }
+
+                // Affichage des articles s'il y a achat en vrac
+                else {
+                    /* Si un article est acheté en un multiple de 3 exemplaires,
+                     le prix à l'unité n'intervient pas.*/
+                    if(articlePanier.getQuantite()%3 == 0) {
+                        JLabel infoLabel = new JLabel("<html><b>" + article.getNom() + "</b> - " +
+                                "Prix total: " + String.format("%.2f", prixTotal) + "€ (" +
+                                article.getPrix_vrac()  + "€ × " + articlePanier.getQuantite()/3 + ")</html>");
+                        articlePanel.add(infoLabel, BorderLayout.CENTER);
+                    }
+
+                    /* Sinon il intervient */
+                    else {
+                        JLabel infoLabel = new JLabel("<html><b>" + article.getNom() + "</b> - " +
+                                "Prix total: " + String.format("%.2f", prixTotal) + "€ (" +
+                                article.getPrix_vrac() + "€ × " + articlePanier.getQuantite()/3 + " + " +
+                                article.getPrix() + " × " + articlePanier.getQuantite()%3 + ")</html>");
+                        articlePanel.add(infoLabel, BorderLayout.CENTER);
+                    }
+                }
 
                 JButton supprimerButton = new JButton("Supprimer");
                 supprimerButton.addActionListener(e -> {
-                    /* met les boutons en français */
                     UIManager.put("OptionPane.yesButtonText", "Oui");
                     UIManager.put("OptionPane.noButtonText", "Non");
-
                     int choix = JOptionPane.showConfirmDialog(
                             this,
                             "Voulez-vous vraiment supprimer cet article ?",
@@ -142,7 +164,7 @@ public class VuePanier extends JFrame {
         articlesPanel.repaint();
     }
 
-    /*----------------------- Supprimer l'article -------------------*/ 
+    /*----------------------- Supprimer l'article -------------------*/
     private void supprimerArticle(ArticlePanier articlePanier) {
         int panierId = PanierDAO.getOrCreatePanierId(utilisateur.getIdUtilisateur());
         int articleId = articlePanier.getArticle().getId();
@@ -182,7 +204,7 @@ public class VuePanier extends JFrame {
                 stmt.setInt(2, articleId);
 
                 if (stmt.executeUpdate() > 0) {
-                    // Réincrémenter le stock NORMAL avec la quantité totale qui était dans le panier
+                    // Réincrémenter le stock avec la quantité totale qui était dans le panier
                     PreparedStatement updateStock = connexion.prepareStatement(
                             "UPDATE article SET quantite = quantite + ? WHERE id_article = ?");
                     updateStock.setInt(1, articlePanier.getQuantite());
@@ -244,13 +266,14 @@ public class VuePanier extends JFrame {
 
         for (ArticlePanier articlePanier : panierArticles) {
             Article article = articlePanier.getArticle();
-            double prixTotal = articlePanier.getPrixTotal();
+            double prixTotal = (articlePanier.getQuantite()/3) * article.getPrix_vrac() + (articlePanier.getQuantite()%3) * article.getPrix();
             totalGeneral += prixTotal;
 
             recap.append("<li>")
                     .append(article.getNom())
                     .append(" - Quantité: ").append(articlePanier.getQuantite())
                     .append(" - Prix unitaire: ").append(String.format("%.2f", article.getPrix())).append("€")
+                    .append(" - Prix vrac: ").append(String.format("%.2f", article.getPrix_vrac())).append("€")
                     .append(" - Total: ").append(String.format("%.2f", prixTotal)).append("€")
                     .append("</li>");
         }
