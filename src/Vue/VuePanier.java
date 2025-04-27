@@ -146,8 +146,13 @@ public class VuePanier extends JFrame {
     private void supprimerArticle(ArticlePanier articlePanier) {
         int panierId = PanierDAO.getOrCreatePanierId(utilisateur.getIdUtilisateur());
         int articleId = articlePanier.getArticle().getId();
+        Connection connexion = null;
 
-        try (Connection connexion = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "")) {
+        try {
+            connexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/shopping", "root", "");
+            // Désactiver l'auto-commit pour gérer la transaction
+            connexion.setAutoCommit(false);
+
             if (articlePanier.getQuantite() > 1) {
                 // Mise à jour de la quantité (décrémentation)
                 String sql = "UPDATE panier_article SET quantite = quantite - 1 WHERE id_panier = ? AND id_article = ?";
@@ -155,8 +160,13 @@ public class VuePanier extends JFrame {
                 stmt.setInt(1, panierId);
                 stmt.setInt(2, articleId);
 
-                // Suppression d'un exemplaire
                 if (stmt.executeUpdate() > 0) {
+                    // Réincrémenter le stock NORMAL
+                    PreparedStatement updateStock = connexion.prepareStatement(
+                            "UPDATE article SET quantite = quantite + 1 WHERE id_article = ?");
+                    updateStock.setInt(1, articleId);
+                    updateStock.executeUpdate();
+
                     articlePanier.setQuantite(articlePanier.getQuantite() - 1);
                     afficherArticles();
                     JOptionPane.showMessageDialog(this,
@@ -172,6 +182,13 @@ public class VuePanier extends JFrame {
                 stmt.setInt(2, articleId);
 
                 if (stmt.executeUpdate() > 0) {
+                    // Réincrémenter le stock NORMAL avec la quantité totale qui était dans le panier
+                    PreparedStatement updateStock = connexion.prepareStatement(
+                            "UPDATE article SET quantite = quantite + ? WHERE id_article = ?");
+                    updateStock.setInt(1, articlePanier.getQuantite());
+                    updateStock.setInt(2, articleId);
+                    updateStock.executeUpdate();
+
                     panierArticles.remove(articlePanier);
                     afficherArticles();
                     JOptionPane.showMessageDialog(this,
@@ -180,12 +197,32 @@ public class VuePanier extends JFrame {
                             JOptionPane.INFORMATION_MESSAGE);
                 }
             }
+            // Valider la transaction
+            connexion.commit();
+
         } catch (SQLException e) {
+            // Annuler la transaction en cas d'erreur
+            if (connexion != null) {
+                try {
+                    connexion.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
             e.printStackTrace();
             JOptionPane.showMessageDialog(this,
                     "Erreur lors de la suppression: " + e.getMessage(),
                     "Erreur",
                     JOptionPane.ERROR_MESSAGE);
+        } finally {
+            if (connexion != null) {
+                try {
+                    connexion.setAutoCommit(true); // Rétablir l'auto-commit
+                    connexion.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
