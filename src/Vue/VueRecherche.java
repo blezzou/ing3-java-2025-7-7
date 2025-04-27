@@ -206,10 +206,10 @@ public class VueRecherche extends JFrame {
                 BorderFactory.createLineBorder(Color.GRAY),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
-        card.setPreferredSize(new Dimension(900, 150));
+        card.setPreferredSize(new Dimension(900, 300));
 
         // Panel d'informations à gauche
-        JPanel infoPanel = new JPanel(new GridLayout(5, 1, 5, 5));
+        JPanel infoPanel = new JPanel(new GridLayout(4, 2, 1, 1));
         infoPanel.add(new JLabel("Nom: " + a.getNom()));
         infoPanel.add(new JLabel("Marque: " + a.getMarque()));
         infoPanel.add(new JLabel(String.format("Prix: %.2f€", a.getPrix())));
@@ -223,10 +223,10 @@ public class VueRecherche extends JFrame {
 
         // Image
         JLabel imageLabel = new JLabel();
-        imageLabel.setPreferredSize(new Dimension(100, 100));
+        imageLabel.setPreferredSize(new Dimension(150, 150));
         try {
             ImageIcon icon = new ImageIcon(a.getImage());
-            Image img = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+            Image img = icon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
             imageLabel.setIcon(new ImageIcon(img));
         } catch (Exception e) {
             imageLabel.setText("Image non disponible");
