@@ -149,7 +149,7 @@ public class VuePanier extends JFrame {
         Connection connexion = null;
 
         try {
-            connexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/shopping", "root", "");
+            connexion = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "");
             // Désactiver l'auto-commit pour gérer la transaction
             connexion.setAutoCommit(false);
 
