@@ -25,7 +25,6 @@ public class VueRecherche extends JFrame {
     private JTextField prix_vracMinField;
     private JTextField prix_vracMaxField;
     private JTextField quantiteField;
-    private JTextField quantite_vracField;
 
     public VueRecherche(String texteRecherche, Utilisateur utilisateur) {
         this.utilisateurConnecte = utilisateur;
@@ -129,12 +128,6 @@ public class VueRecherche extends JFrame {
         quantiteField = new JTextField(5);
         quantitePanel.add(quantiteField);
 
-        // Filtre par quantité vrac
-        JPanel quantite_vracPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        quantitePanel.add(new JLabel("Quantité vrac minimale:"));
-        quantite_vracField = new JTextField(5);
-        quantitePanel.add(quantite_vracField);
-
         // Boutons
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton applyButton = new JButton("Appliquer");
@@ -150,7 +143,6 @@ public class VueRecherche extends JFrame {
         panel.add(prixPanel);
         panel.add(prix_vracPanel);
         panel.add(quantitePanel);
-        panel.add(quantite_vracPanel);
         panel.add(buttonPanel);
 
         return panel;
@@ -169,7 +161,6 @@ public class VueRecherche extends JFrame {
         float minPrixVrac = parseFloat(prix_vracMinField.getText());
         float maxPrixVrac = parseFloat(prix_vracMaxField.getText());
         int minQuantite = parseInt(quantiteField.getText());
-        int minQuantiteVrac = parseInt(quantite_vracField.getText());
 
         List<Article> filtered = allResults.stream()
                 .filter(a -> a.getNote() >= minNote)
@@ -178,7 +169,6 @@ public class VueRecherche extends JFrame {
                 .filter(a -> minPrixVrac == 0 || a.getPrix_vrac() >= minPrixVrac)
                 .filter(a -> maxPrixVrac == 0 || a.getPrix_vrac() <= maxPrixVrac)
                 .filter(a -> minQuantite == 0 || a.getQuantite() >= minQuantite)
-                .filter(a -> minQuantiteVrac == 0 || a.getQuantite_vrac() >= minQuantiteVrac)
                 .collect(Collectors.toList());
 
         displayResults(filtered);
@@ -191,7 +181,6 @@ public class VueRecherche extends JFrame {
         prix_vracMinField.setText("");
         prix_vracMaxField.setText("");
         quantiteField.setText("");
-        quantite_vracField.setText("");
         displayResults(allResults);
     }
 
@@ -226,7 +215,6 @@ public class VueRecherche extends JFrame {
         infoPanel.add(new JLabel(String.format("Prix: %.2f€", a.getPrix())));
         infoPanel.add(new JLabel(String.format("Prix vrac: %.2f€", a.getPrix_vrac())));
         infoPanel.add(new JLabel("Stock: " + a.getQuantite() + " unités"));
-        infoPanel.add(new JLabel("Stock vrac: " + a.getQuantite_vrac() + " unités"));
         JLabel descriptionLabel = new JLabel("<html><div style='width: 250px;'>Description : "
                 + a.getDescription() + "</div></html>");
         descriptionLabel.setHorizontalAlignment(SwingConstants.LEFT);
@@ -253,13 +241,9 @@ public class VueRecherche extends JFrame {
             new VueArticle(a, utilisateurConnecte);
         });
 
-        //Ajouter article au panier
+        // Ajouter article au panier
         ajouterButton.addActionListener(e -> {
             ajouterArticleAuPanier(a);
-        });
-
-        ajouterButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Article ajouté au panier");
         });
 
         buttonPanel.add(voirButton);
@@ -275,7 +259,7 @@ public class VueRecherche extends JFrame {
 
         return card;
     }
-    
+
     private void ajouterArticleAuPanier(Article a) {
         if (utilisateurConnecte != null) {
             try {
