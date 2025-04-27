@@ -43,8 +43,8 @@ public class PanierDAO {
 
     // Ajoute un article dans le panier
     public static void ajouterArticleDansPanier(int panierId, int articleId, int quantite) {
-
-        try {Connection connexion = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "");
+        try {Connection connexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/shopping", "root", "");
+            connexion.setAutoCommit(false);
             // Vérifie si l'article est déjà dans le panier
             PreparedStatement check = connexion.prepareStatement(
                     "SELECT quantite FROM panier_article WHERE id_panier = ? AND id_article = ?");
