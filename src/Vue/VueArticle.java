@@ -1,5 +1,6 @@
 package Vue;
 
+import DAO.PanierDAO;
 import DAO.UtilisateurDAO;
 import DAO.ArticleDAO;
 import DAO.AvisDAO;
@@ -26,7 +27,7 @@ public class VueArticle extends JFrame {
 
     // Composants d'édition
     private JTextField nomField, marqueField, descriptionField;
-    private JTextField prixField, prix_vraxField, quantiteField, quantite_vraxField, noteField;
+    private JTextField prixField, prix_vraxField, quantite_vraxField, quantiteField, noteField;
     private boolean modeEdition = false; //Etat du mode édition
 
     /**
@@ -84,7 +85,9 @@ public class VueArticle extends JFrame {
                 + article.getDescription() + "</div></html>");
         descriptionLabel.setHorizontalAlignment(SwingConstants.LEFT);
         infoPanel.add(descriptionLabel);
-        infoPanel.add(new JLabel("Prix : " + article.getPrix() + " €"));
+
+        infoPanel.add(new JLabel("Stock : " + article.getQuantite() + " unités"));
+        infoPanel.add(new JLabel("Prix : " + article.getPrix() + " € (" + article.getPrix_vrac() + " € les 3)"));
         infoPanel.add(Box.createRigidArea(new Dimension(0, 20))); //espacement
 
         // Ajout du bouton pour voir les avis
@@ -182,6 +185,7 @@ public class VueArticle extends JFrame {
             ajouterPanierBtn.addActionListener(e -> {
                 //
                 JOptionPane.showMessageDialog(this, "Article ajouté au panier !");
+                ajouterArticleAuPanier(article);
                 // méthode DAO pour ajouter dans panier_article
             });
             infoPanel.add(ajouterPanierBtn);
@@ -281,6 +285,21 @@ public class VueArticle extends JFrame {
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Erreur de connexion à la base de données", "Erreur", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void ajouterArticleAuPanier(Article a) {
+        if (utilisateur != null) {
+            try {
+                // Ajoute l'article dans le panier BDD
+                int panierId = PanierDAO.getOrCreatePanierId(utilisateur.getIdUtilisateur());
+                PanierDAO.ajouterArticleDansPanier(panierId, a.getId(), 1);
+            } catch (RuntimeException e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Veuillez vous connecter pour ajouter des articles au panier.");
+            new VueConnexion(); // Redirige vers login
         }
     }
 }
