@@ -1,6 +1,7 @@
 package Vue;
 
 import DAO.PanierDAO;
+import DAO.CommandeDAO;
 import Modele.Article;
 import Modele.ArticlePanier;
 import Modele.Utilisateur;
@@ -10,6 +11,9 @@ import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class VuePanier extends JFrame {
     private Utilisateur utilisateur;
@@ -249,7 +253,7 @@ public class VuePanier extends JFrame {
     }
 
     /*------------------- Récapitulatif du paiement ----------------*/
-    
+
     private void afficherRecapitulatif() {
         if (panierArticles.isEmpty()) {
             JOptionPane.showMessageDialog(this,
@@ -266,19 +270,29 @@ public class VuePanier extends JFrame {
 
         for (ArticlePanier articlePanier : panierArticles) {
             Article article = articlePanier.getArticle();
-            double prixTotal = (articlePanier.getQuantite()/3) * article.getPrix_vrac() + (articlePanier.getQuantite()%3) * article.getPrix();
+            int qteVrac = articlePanier.getQuantite() / 3;
+            int qteUnitaire = articlePanier.getQuantite() % 3;
+            double prixTotal = qteVrac * article.getPrix_vrac() + qteUnitaire * article.getPrix();
             totalGeneral += prixTotal;
 
-            recap.append("<li>")
-                    .append(article.getNom())
-                    .append(" - Quantité: ").append(articlePanier.getQuantite())
-                    .append(" - Prix unitaire: ").append(String.format("%.2f", article.getPrix())).append("€")
-                    .append(" - Prix vrac: ").append(String.format("%.2f", article.getPrix_vrac())).append("€")
-                    .append(" - Total: ").append(String.format("%.2f", prixTotal)).append("€")
-                    .append("</li>");
+            recap.append("<li><b>").append(article.getNom()).append("</b> (")
+                    .append(article.getMarque()).append(")<br/>")
+                    .append("Quantité: ").append(articlePanier.getQuantite()).append(" (");
+
+            if (qteVrac > 0) {
+                recap.append(qteVrac).append(" lot(s) de 3 à ").append(String.format("%.2f", article.getPrix_vrac())).append("€");
+                if (qteUnitaire > 0) {
+                    recap.append(" + ");
+                }
+            }
+            if (qteUnitaire > 0) {
+                recap.append(qteUnitaire).append(" unité(s) à ").append(String.format("%.2f", article.getPrix())).append("€");
+            }
+
+            recap.append(")<br/>Total: ").append(String.format("%.2f", prixTotal)).append("€</li><br/>");
         }
 
-        recap.append("</ul><b>Total général: ").append(String.format("%.2f", totalGeneral)).append("€</b><br/><br/>");
+        recap.append("</ul><h3>Total général: ").append(String.format("%.2f", totalGeneral)).append("€</h3></html>");
 
         // Ajout des boutons de confirmation
         Object[] options = {"Payer", "Annuler"};
@@ -300,26 +314,58 @@ public class VuePanier extends JFrame {
 
     /*--------------- Effectuation du paiement -------------*/
     private void effectuerPaiement() {
-
         int panierId = PanierDAO.getOrCreatePanierId(utilisateur.getIdUtilisateur());
+        Connection connexion = null;
 
-        try (Connection connexion = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "")) {
-            // Vider complètement le panier
+        try {
+            connexion = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "");
+            connexion.setAutoCommit(false); // Démarrer une transaction
+
+            // 1. Calculer le montant total
+            double totalGeneral = 0;
+            for (ArticlePanier articlePanier : panierArticles) {
+                Article article = articlePanier.getArticle();
+                totalGeneral += (articlePanier.getQuantite()/3) * article.getPrix_vrac() +
+                        (articlePanier.getQuantite()%3) * article.getPrix();
+            }
+
+            // 2. Créer la commande
+            CommandeDAO commandeDAO = new CommandeDAO(connexion);
+            int idCommande = commandeDAO.creerCommande(utilisateur.getIdUtilisateur(), totalGeneral);
+
+            if (idCommande == -1) {
+                throw new SQLException("Échec de création de la commande");
+            }
+
+            // 3. Ajouter les articles à la commande
+            commandeDAO.ajouterArticlesCommande(idCommande, panierArticles);
+
+            // 4. Vider le panier
             String sql = "DELETE FROM panier_article WHERE id_panier = ?";
-            PreparedStatement stmt = connexion.prepareStatement(sql);
-            stmt.setInt(1, panierId);
-            stmt.executeUpdate();
+            try (PreparedStatement stmt = connexion.prepareStatement(sql)) {
+                stmt.setInt(1, panierId);
+                stmt.executeUpdate();
+            }
+
+            connexion.commit(); // Valider la transaction
 
             // Mettre à jour l'affichage
             panierArticles.clear();
             afficherArticles();
 
             JOptionPane.showMessageDialog(this,
-                    "Paiement effectué !",
+                    "Paiement effectué ! La commande a été enregistrée.",
                     "Succès",
                     JOptionPane.INFORMATION_MESSAGE);
 
         } catch (SQLException e) {
+            try {
+                if (connexion != null) {
+                    connexion.rollback();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             e.printStackTrace();
             JOptionPane.showMessageDialog(this,
                     "Erreur lors du paiement: " + e.getMessage(),

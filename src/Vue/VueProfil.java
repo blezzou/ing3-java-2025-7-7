@@ -4,8 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 
 import Modele.Article;
+import Modele.ArticlePanier;
 import Modele.Utilisateur;
 import DAO.UtilisateurDAO;
+import DAO.CommandeDAO;
+import Modele.Commande;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +17,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 public class VueProfil extends JFrame {
 
@@ -249,9 +253,55 @@ public class VueProfil extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createTitledBorder("Historique des commandes"));
 
-        JLabel placeholder = new JLabel("Historique des commandes sera affiché ici", SwingConstants.CENTER);
-        placeholder.setForeground(Color.GRAY);
-        panel.add(placeholder, BorderLayout.CENTER);
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+
+        try (Connection connexion = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "")) {
+            CommandeDAO commandeDAO = new CommandeDAO(connexion);
+            List<Commande> commandes = commandeDAO.getCommandesParUtilisateur(utilisateur.getIdUtilisateur());
+
+            if (commandes.isEmpty()) {
+                contentPanel.add(new JLabel("Aucune commande passée pour le moment.", SwingConstants.CENTER));
+            } else {
+                for (Commande commande : commandes) {
+                    JPanel cmdPanel = new JPanel(new BorderLayout());
+                    cmdPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+                    // Récupérer les articles de la commande
+                    List<ArticlePanier> articles = commandeDAO.getArticlesCommande(commande.getIdCommande());
+                    commande.setArticles(articles);
+
+                    // Créer le récapitulatif
+                    StringBuilder recap = new StringBuilder("<html>");
+                    recap.append("<b>Commande #").append(commande.getIdCommande())
+                            .append("</b> - ").append(commande.getFormattedDate())
+                            .append("<br/>Montant total: ").append(String.format("%.2f", commande.getMontantTotal())).append("€<br/>");
+
+                    for (ArticlePanier articlePanier : articles) {
+                        Article article = articlePanier.getArticle();
+                        double prixTotal = (articlePanier.getQuantite()/3) * article.getPrix_vrac() +
+                                (articlePanier.getQuantite()%3) * article.getPrix();
+
+                        recap.append("• ").append(article.getNom())
+                                .append(" - ").append(articlePanier.getQuantite()).append("x ")
+                                .append(String.format("%.2f", prixTotal)).append("€<br/>");
+                    }
+                    recap.append("</html>");
+
+                    JLabel recapLabel = new JLabel(recap.toString());
+                    cmdPanel.add(recapLabel, BorderLayout.CENTER);
+
+                    contentPanel.add(cmdPanel);
+                    contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            contentPanel.add(new JLabel("Erreur lors du chargement de l'historique", SwingConstants.CENTER));
+        }
+
+        JScrollPane scrollPane = new JScrollPane(contentPanel);
+        panel.add(scrollPane, BorderLayout.CENTER);
 
         return panel;
     }

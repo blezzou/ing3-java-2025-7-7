@@ -164,6 +164,26 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
                                              PRIMARY KEY (`id_utilisateur`)
 ) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- Table pour stocker les commandes validées
+CREATE TABLE IF NOT EXISTS `commande` (
+                                          `id_commande` int NOT NULL AUTO_INCREMENT,
+                                          `id_utilisateur` int NOT NULL,
+                                          `date_commande` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                          `montant_total` decimal(10,2) NOT NULL,
+                                          PRIMARY KEY (`id_commande`),
+                                          KEY `id_utilisateur` (`id_utilisateur`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Table pour les articles d'une commande
+CREATE TABLE IF NOT EXISTS `commande_article` (
+                                                  `id_commande` int NOT NULL,
+                                                  `id_article` int NOT NULL,
+                                                  `quantite` int NOT NULL,
+                                                  `prix_unitaire` decimal(10,2) NOT NULL,
+                                                  `prix_vrac` decimal(10,2) NOT NULL,
+                                                  PRIMARY KEY (`id_commande`, `id_article`),
+                                                  KEY `id_article` (`id_article`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 --
 -- Déchargement des données de la table `utilisateur`
 --
