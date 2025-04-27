@@ -284,7 +284,7 @@ public class VueProfil extends JFrame {
 
                         recap.append("• ").append(article.getNom())
                                 .append(" - ").append(articlePanier.getQuantite()).append("x ")
-                                .append(String.format("%.2f", prixTotal)).append("€<br/>");
+                                .append(String.format("%.2f", article.getPrix())).append("€<br/>");
                     }
                     recap.append("</html>");
 
