@@ -1,6 +1,7 @@
 package Vue;
 
 import DAO.RechercheDAO;
+import DAO.PanierDAO;
 import Modele.Article;
 import Modele.Utilisateur;
 
@@ -252,6 +253,11 @@ public class VueRecherche extends JFrame {
             new VueArticle(a, utilisateurConnecte);
         });
 
+        //Ajouter article au panier
+        ajouterButton.addActionListener(e -> {
+            ajouterArticleAuPanier(a);
+        });
+
         ajouterButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "Article ajouté au panier");
         });
@@ -268,6 +274,19 @@ public class VueRecherche extends JFrame {
         card.add(buttonPanel, BorderLayout.EAST);
 
         return card;
+    }
+    
+    private void ajouterArticleAuPanier(Article a) {
+        if (utilisateurConnecte != null) {
+            // Ajoute l'article dans le panier BDD
+            int panierId = PanierDAO.getOrCreatePanierId(utilisateurConnecte.getIdUtilisateur());
+            PanierDAO.ajouterArticleDansPanier(panierId, a.getId(), 1);
+
+            JOptionPane.showMessageDialog(this, "Article ajouté au panier !");
+        } else {
+            JOptionPane.showMessageDialog(this, "Veuillez vous connecter pour ajouter des articles au panier.");
+            new VueConnexion(); // Redirige vers login
+        }
     }
 
     private float parseFloat(String text) {
