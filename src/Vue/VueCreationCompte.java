@@ -52,6 +52,14 @@ public class VueCreationCompte extends JFrame {
         JButton creerButton = new JButton("Créer le compte");
         panel.add(creerButton);
 
+        // Si le compte existe
+        JButton compteExisteButton = new JButton("Vous avez un compte ? Connectez-vous !");
+        compteExisteButton.addActionListener(e -> {
+            new VueConnexion();
+            dispose();
+        });
+        panel.add(compteExisteButton);
+
         // Ajout du panneau à la fenêtre
         add(panel);
 
