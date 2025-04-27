@@ -40,8 +40,8 @@ public class ArticleDAO {
             stmt.setString(4, Article.getDescription());
             stmt.setFloat(5, Article.getPrix());
             stmt.setFloat(6, Article.getPrix_vrac());
-            stmt.setInt(7, Article.getQuantite());
-            stmt.setInt(8, Article.getQuantite_vrac());
+            stmt.setInt(7, Article.getQuantite_vrac());
+            stmt.setInt(8, Article.getQuantite());
             stmt.setFloat(9, Article.getNote());
 
             //exécution de la requete
@@ -80,11 +80,11 @@ public class ArticleDAO {
                 String description = rs.getString("description");
                 float prix = rs.getFloat("prix");
                 float prix_vrac = rs.getFloat("prix_vrac");
-                int quantite = rs.getInt("quantite");
                 int quantite_vrac = rs.getInt("quantite_vrac");
+                int quantite = rs.getInt("quantite");
                 float note = rs.getFloat("note");
 
-                Article a = new Article(id, nom, image, marque, description, prix, prix_vrac, quantite, quantite_vrac, note);
+                Article a = new Article(id, nom, image, marque, description, prix, prix_vrac, quantite_vrac, quantite, note);
                 articles.add(a);
                 System.out.println(a); //Debug : affichage de l'article
             }
