@@ -75,7 +75,7 @@ INSERT INTO `article` (`id_article`, `nom`, `image`, `marque`, `description`, `p
     (26, 'Bonnet', 'images_Article/bonnet_stetson.jpg', 'Stetson', 'Fabriqué avec des matériaux premium, ce couvre-chef allie durabilité, confort et un style unique pour les amateurs de mode roots ou les adeptes d''un look vintage raffiné.', 6.59, 16.67, 45, 3, 0),
     (27, 'Casquette', 'images_Article/casquette_sweetPants.jpg', 'Sweet-Pants', 'Parfaite pour compléter vos tenues décontractées ou sportives, cette casquette allie look tendance et qualité pour un style affirmé au quotidien.', 10.00, 28.50, 28, 3, 0),
     (28, 'Sandalettes', 'images_Article/sandalette_gabor.jpg', 'Gabor', 'Idéales pour les beaux jours, ces sandales féminines offrent une morphologie étudiée et des matières haut de gamme pour un look chic et décontracté, en ville comme en vacances.', 65.00, 189.90, 30, 3, 0),
-    (29, 'Lunettes de soleil', 'images_Article/lunettes_level.jpg', 'Level', 'Parfaites pour compléter vos tenues streetwear ou vos outfits décontractés, ces lunettes offrent une protection UV optimale tout en restant légères et résistantes.', 20.00, 56.00, 40, 3, 0),
+    (29, 'Lunettes de soleil', 'images_Article/lunettes_level.jpg', 'Level', 'Parfaites pour compléter vos tenues streetwear ou vos outfits décontractés, ces lunettes offrent une protection UV optimale tout en restant légères et résistantes.', 20.00, 56.50, 40, 3, 0),
     (30, 'Echarpe', 'images_Article/echarpe_pimkie.JPG', 'Pimkie', 'Craquez pour cette écharpe Pimkie, un accessoire mode incontournable pour allier chaleur et élégance pendant la saison froide. Avec son tissu doux et enveloppant, cette écharpe vous offre un confort optimal tout en sublimant tous vos looks.', 8.99, 21.70, 15, 3, 0);
 COMMIT;
 
