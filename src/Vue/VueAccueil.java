@@ -111,8 +111,8 @@ public class VueAccueil extends JFrame {
                         a.getDescription(),
                         a.getPrix(),
                         a.getPrix_vrac(),
-                        a.getQuantite(),
                         a.getQuantite_vrac(),
+                        a.getQuantite(),
                         a.getNote(),
                         utilisateurConnecte,
                         utilisateurConnecte.getAdmin()
@@ -130,8 +130,8 @@ public class VueAccueil extends JFrame {
                         a.getDescription(),
                         a.getPrix(),
                         a.getPrix_vrac(),
-                        a.getQuantite(),
                         a.getQuantite_vrac(),
+                        a.getQuantite(),
                         a.getNote(),
                         utilisateurConnecte,
                         0
@@ -176,7 +176,7 @@ public class VueAccueil extends JFrame {
      */
 
     private JPanel createArticleCard(Article a, int id, String nom, String image, String marque, String description,
-                                     float prix, float prix_vrac, int quantite, int quantite_vrac, float note,
+                                     float prix, float prix_vrac, int quantite_vrac, int quantite, float note,
                                      Utilisateur utilisateur, int admin) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
@@ -304,7 +304,7 @@ public class VueAccueil extends JFrame {
 
         return card;
     }
-    
+
     private void ajouterArticleAuPanier(Article a) {
         if (utilisateurConnecte != null) {
             try {
