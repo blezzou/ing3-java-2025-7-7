@@ -44,8 +44,8 @@ public class RechercheDAO {
                         rs.getString("description"),
                         rs.getFloat("prix"),
                         rs.getFloat("prix_vrac"),
-                        rs.getInt("quantite"),
                         rs.getInt("quantite_vrac"),
+                        rs.getInt("quantite"),
                         rs.getInt("note")
                 );
                 articlesTrouves.add(a);
