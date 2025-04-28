@@ -164,7 +164,19 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
     PRIMARY KEY (`id_utilisateur`)
 ) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Déchargement des données de la table `utilisateur`
+--
+INSERT INTO `utilisateur` (`id_utilisateur`, `admin`, `nom`, `prenom`, `email`, `mot_de_passe`, `historique`) VALUES
+    (1, 0, 'Nicolas', 'Pellerin', 'nicolas@gmail.com', 'azerty', 0),
+    (3, 0, 'aaa', 'aaa', 'nicolas@gmail.com', 'aa', 0),
+    (6, 1, 'admin', 'admin', 'admin', 'admin', 0),
+    (7, 0, 'jean', 'jean', 'jean', 'jean', 0);
+COMMIT;
+
+
 -- Table pour stocker les commandes validées
+DROP TABLE IF EXISTS `commande`;
 CREATE TABLE IF NOT EXISTS `commande` (
                                           `id_commande` int NOT NULL AUTO_INCREMENT,
                                           `id_utilisateur` int NOT NULL,
@@ -175,6 +187,7 @@ CREATE TABLE IF NOT EXISTS `commande` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Table pour les articles d'une commande
+DROP TABLE IF EXISTS `commande_article`;
 CREATE TABLE IF NOT EXISTS `commande_article` (
                                                   `id_commande` int NOT NULL,
                                                   `id_article` int NOT NULL,
@@ -184,16 +197,6 @@ CREATE TABLE IF NOT EXISTS `commande_article` (
                                                   PRIMARY KEY (`id_commande`, `id_article`),
                                                   KEY `id_article` (`id_article`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
---
--- Déchargement des données de la table `utilisateur`
---
-
-INSERT INTO `utilisateur` (`id_utilisateur`, `admin`, `nom`, `prenom`, `email`, `mot_de_passe`, `historique`) VALUES
-    (1, 0, 'Nicolas', 'Pellerin', 'nicolas@gmail.com', 'azerty', 0),
-    (3, 0, 'aaa', 'aaa', 'nicolas@gmail.com', 'aa', 0),
-    (6, 1, 'admin', 'admin', 'admin', 'admin', 0),
-    (7, 0, 'jean', 'jean', 'jean', 'jean', 0);
-COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
