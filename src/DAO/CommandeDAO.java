@@ -71,7 +71,7 @@ public class CommandeDAO {
 
     public List<ArticlePanier> getArticlesCommande(int idCommande) throws SQLException {
         List<ArticlePanier> articles = new ArrayList<>();
-        String sql = "SELECT a.*, ca.quantite, ca.prix_unitaire, ca.prix_vrac " +
+        String sql = "SELECT a.id_article, a.nom, a.image, a.marque, a.description, a.prix, a.prix_vrac, a.quantite_vrac, a.note, a.quantite AS stock, ca.quantite AS quantite_commandee, ca.prix_unitaire, ca.prix_vrac " +
                 "FROM commande_article ca " +
                 "JOIN article a ON ca.id_article = a.id_article " +
                 "WHERE ca.id_commande = ?";
@@ -90,10 +90,10 @@ public class CommandeDAO {
                         rs.getFloat("prix_unitaire"),
                         rs.getFloat("prix_vrac"),
                         rs.getInt("quantite_vrac"),
-                        rs.getInt("quantite"),
+                        rs.getInt("stock"),
                         rs.getFloat("note")
                 );
-                articles.add(new ArticlePanier(article, rs.getInt("quantite")));
+                articles.add(new ArticlePanier(article, rs.getInt("quantite_commandee")));
             }
         }
         return articles;
