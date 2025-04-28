@@ -27,6 +27,17 @@ public class ArticlePanier {
         this.quantite = quantite;
     }
 
+    // Setter
+
+    /**
+     * Modifie la quantité de l'article dans le panier
+     * @param quantite La nouvelle quantité (doit être positive)
+     */
+    public void setQuantite(int quantite) {
+        this.quantite = quantite;
+    }
+
+
     // Getters
 
     /**
@@ -45,24 +56,19 @@ public class ArticlePanier {
         return quantite;
     }
 
-    // Setter
 
-    /**
-     * Modifie la quantité de l'article dans le panier
-     * @param quantite La nouvelle quantité (doit être positive)
-     */
-    public void setQuantite(int quantite) {
-        this.quantite = quantite;
-    }
 
     // Méthode de calcul
 
     /**
      * Calcule le prix total pour cet article dans le panier
-     * (prix unitaire * quantité)
+     * en appliquant le prix vrac pour les lots de 3 articles
+     * et le prix unitaire pour les articles restants
      * @return Le prix total pour cette ligne du panier
      */
     public double getPrixTotal() {
-        return article.getPrix() * quantite;
+        int quantiteVrac = quantite / 3;  // Nombre de lots de 3 articles
+        int quantiteUnitaire = quantite % 3;  // Articles restants
+        return (quantiteVrac * article.getPrix_vrac()) + (quantiteUnitaire * article.getPrix());
     }
 }
