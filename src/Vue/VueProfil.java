@@ -2,39 +2,25 @@ package Vue;
 
 import javax.swing.*;
 import java.awt.*;
-
-import Modele.Article;
-import Modele.ArticlePanier;
 import Modele.Utilisateur;
 import DAO.UtilisateurDAO;
 import DAO.CommandeDAO;
 import Modele.Commande;
-
+import Modele.Article;
+import Modele.ArticlePanier;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
 
 public class VueProfil extends JFrame {
 
-    private Map<Integer, Article> panierArticles = new HashMap<>();
-    private Map<Integer, Integer> panierQuantites = new HashMap<>();
-
-    //L'utilisateur actuellement connecté
     private Utilisateur utilisateur;
-
-    //Champs pour l'édition des infos utilisateur
     private JTextField nomField, prenomField, emailField;
     private JPasswordField motDePasseField;
-
-    //variable pour savoir si on est en mode édition ou pas
     private boolean modeEdition = false;
-
-    //Composants pour l'affichage des infos
     private JLabel nomLabel, prenomLabel, emailLabel;
 
     public VueProfil(Utilisateur utilisateur) {
@@ -46,30 +32,57 @@ public class VueProfil extends JFrame {
         System.out.println("Prénom: " + utilisateur.getPrenom());
         System.out.println("Email: " + utilisateur.getEmail());
 
+        // Configuration de la fenêtre
         setTitle("Profil Utilisateur");
         setSize(1000, 800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); //centre la fenêtre sur l'écran
+        setMinimumSize(new Dimension(900, 700));
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
 
+        // Style global
+        UIManager.put("Panel.background", new Color(240, 240, 240));
+        UIManager.put("Button.background", new Color(70, 130, 180));
+        UIManager.put("Button.foreground", Color.WHITE);
+        setBackground(new Color(240, 240, 240));
+
+        // Panel principal
         JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        mainPanel.setBackground(new Color(240, 240, 240));
 
-        // ---- HEADER ---- //
-        // Comme dans les autres vues, avec recherche et boutons en haut
+        /* ------------------------- */
+        /* EN-TÊTE */
+        /* ------------------------- */
         JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(52, 73, 94));
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
-        // Barre de recherche avec champ texte + bouton
-        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JTextField searchField = new JTextField(30);
-        JButton searchButton = new JButton("Rechercher");
+        // Barre de recherche
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        searchPanel.setOpaque(false);
+
+        JTextField searchField = new JTextField(25);
+        searchField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        searchField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                BorderFactory.createEmptyBorder(5, 8, 5, 8)
+        ));
+
+        JButton searchButton = createStyledButton("Rechercher");
+        searchButton.setBackground(new Color(46, 204, 113)); // Vert
+
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
         headerPanel.add(searchPanel, BorderLayout.CENTER);
 
-        // Les boutons en haut à droite : Panier, Accueil et Se Déconnecter
-        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton panierButton = new JButton("Panier");
-        JButton accueilButton = new JButton("Accueil");
-        JButton logOutButton = new JButton("Se déconnecter");
+        // Boutons de navigation
+        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        buttonsPanel.setOpaque(false);
+
+        JButton panierButton = createStyledButton("Panier");
+        JButton accueilButton = createStyledButton("Accueil");
+        JButton logOutButton = createStyledButton("Se déconnecter");
+        logOutButton.setBackground(new Color(231, 76, 60)); // Rouge
 
         buttonsPanel.add(panierButton);
         buttonsPanel.add(accueilButton);
@@ -78,42 +91,50 @@ public class VueProfil extends JFrame {
 
         mainPanel.add(headerPanel, BorderLayout.NORTH);
 
-        // ---- CONTENU ---- //
+        /* ------------------------- */
+        /* CONTENU PRINCIPAL */
+        /* ------------------------- */
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        contentPanel.setBackground(Color.WHITE);
 
-        // Partie infos personnelles (avec bouton modifier)
+        // Partie infos personnelles
         JPanel infoPanel = createInfoPanel();
         contentPanel.add(infoPanel);
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 20))); //petit espace
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        //si l'utilisateur est admin, on ajoute le bouton pour gérer les articles
+        // Bouton admin si nécessaire
         if (utilisateur.getAdmin() == 1) {
-            JButton ajouterUnArticle = new JButton("Ajouter un article");
-            // Tu peux ajouter ici un ActionListener si tu veux ouvrir une nouvelle fenêtre
-            ajouterUnArticle.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    new VueAjouterArticle(); //ouverture de la vue d'ajout
-                    dispose(); //on ferme celle-ci
-                }
+            JButton ajouterUnArticle = createStyledButton("Ajouter un article");
+            ajouterUnArticle.setBackground(new Color(155, 89, 182)); // Violet
+            ajouterUnArticle.addActionListener(e -> {
+                new VueAjouterArticle();
+                dispose();
             });
-            contentPanel.add(Box.createRigidArea(new Dimension(0, 10))); // petit espace visuel
-            contentPanel.add(ajouterUnArticle);
+
+            JPanel adminPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            adminPanel.setBackground(Color.WHITE);
+            adminPanel.add(ajouterUnArticle);
+            contentPanel.add(adminPanel);
+            contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         }
 
-        // Historique des commandes (pas encore codé mais on prépare le terrain)
+        // Historique des commandes
         JPanel historiquePanel = createHistoriquePanel();
         contentPanel.add(historiquePanel);
 
-        //scroll si le contenu est trop grand
+        // ScrollPane pour le contenu
         JScrollPane scrollPane = new JScrollPane(contentPanel);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // ---- Évènements des boutons du header ---- //
+        /* ------------------------- */
+        /* GESTION DES ÉVÈNEMENTS */
+        /* ------------------------- */
         accueilButton.addActionListener(e -> {
-            new VueAccueil(utilisateur);  // Passer l'utilisateur à VueAccueil
+            new VueAccueil(utilisateur);
             dispose();
         });
 
@@ -135,59 +156,87 @@ public class VueProfil extends JFrame {
             }
         });
 
-
         add(mainPanel);
         setVisible(true);
     }
 
     private JPanel createInfoPanel() {
-        // Création du bloc contenant les infos de l'utilisateur
+        // Panel principal
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Informations personnelles"));
+        panel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                "Informations personnelles",
+                javax.swing.border.TitledBorder.LEFT,
+                javax.swing.border.TitledBorder.TOP,
+                new Font("Segoe UI", Font.BOLD, 16),
+                new Color(70, 130, 180))
+        );
+        panel.setBackground(Color.WHITE);
 
-        //Panel principal qui contiendra les deux modes
+        // Panel avec CardLayout pour basculer entre affichage/édition
         JPanel contentPanel = new JPanel(new CardLayout());
+        contentPanel.setBackground(Color.WHITE);
 
-        // Panel d'affichage (toujours visible)
-        JPanel infoDisplayPanel = new JPanel(new GridLayout(4, 2, 10, 10));
-        infoDisplayPanel.add(new JLabel("Nom:"));
-        nomLabel = new JLabel(utilisateur.getNom());
+        /* ------------------------- */
+        /* PANEL D'AFFICHAGE */
+        /* ------------------------- */
+        JPanel infoDisplayPanel = new JPanel(new GridLayout(4, 2, 15, 10));
+        infoDisplayPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        infoDisplayPanel.setBackground(Color.WHITE);
+
+        JLabel nomTitre = createInfoLabel("Nom:");
+        nomLabel = createInfoValue(utilisateur.getNom());
+        JLabel prenomTitre = createInfoLabel("Prénom:");
+        prenomLabel = createInfoValue(utilisateur.getPrenom());
+        JLabel emailTitre = createInfoLabel("Email:");
+        emailLabel = createInfoValue(utilisateur.getEmail());
+        JLabel mdpTitre = createInfoLabel("Mot de passe:");
+        JLabel mdpValue = createInfoValue("********");
+
+        infoDisplayPanel.add(nomTitre);
         infoDisplayPanel.add(nomLabel);
-
-        infoDisplayPanel.add(new JLabel("Prénom:"));
-        prenomLabel = new JLabel(utilisateur.getPrenom());
+        infoDisplayPanel.add(prenomTitre);
         infoDisplayPanel.add(prenomLabel);
-
-        infoDisplayPanel.add(new JLabel("Email:"));
-        emailLabel = new JLabel(utilisateur.getEmail());
+        infoDisplayPanel.add(emailTitre);
         infoDisplayPanel.add(emailLabel);
+        infoDisplayPanel.add(mdpTitre);
+        infoDisplayPanel.add(mdpValue);
 
-        infoDisplayPanel.add(new JLabel("Mot de passe:"));
-        infoDisplayPanel.add(new JLabel("********"));
+        /* ------------------------- */
+        /* PANEL D'ÉDITION */
+        /* ------------------------- */
+        JPanel infoEditPanel = new JPanel(new GridLayout(4, 2, 15, 10));
+        infoEditPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        infoEditPanel.setBackground(Color.WHITE);
 
-        // Panel d'édition (caché par défaut)
-        JPanel infoEditPanel = new JPanel(new GridLayout(4, 2, 10, 10));
-        nomField = new JTextField(utilisateur.getNom());
-        prenomField = new JTextField(utilisateur.getPrenom());
-        emailField = new JTextField(utilisateur.getEmail());
+        nomField = createStyledTextField(utilisateur.getNom());
+        prenomField = createStyledTextField(utilisateur.getPrenom());
+        emailField = createStyledTextField(utilisateur.getEmail());
         motDePasseField = new JPasswordField();
+        motDePasseField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        motDePasseField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                BorderFactory.createEmptyBorder(5, 8, 5, 8)
+        ));
 
-        infoEditPanel.add(new JLabel("Nom:"));
+        infoEditPanel.add(createInfoLabel("Nom:"));
         infoEditPanel.add(nomField);
-        infoEditPanel.add(new JLabel("Prénom:"));
+        infoEditPanel.add(createInfoLabel("Prénom:"));
         infoEditPanel.add(prenomField);
-        infoEditPanel.add(new JLabel("Email:"));
+        infoEditPanel.add(createInfoLabel("Email:"));
         infoEditPanel.add(emailField);
-        infoEditPanel.add(new JLabel("Nouveau mot de passe:"));
+        infoEditPanel.add(createInfoLabel("Nouveau mot de passe:"));
         infoEditPanel.add(motDePasseField);
 
-        //Ajout des deux panels avec CardLayout
+        // Ajout des deux panels
         contentPanel.add(infoDisplayPanel, "DISPLAY");
         contentPanel.add(infoEditPanel, "EDIT");
         panel.add(contentPanel, BorderLayout.CENTER);
 
-        // Bouton de modification
-        JButton editButton = new JButton("Modifier les infos");
+        /* ------------------------- */
+        /* BOUTON D'ÉDITION */
+        /* ------------------------- */
+        JButton editButton = createStyledButton("Modifier les infos");
         editButton.addActionListener(e -> {
             CardLayout cl = (CardLayout) contentPanel.getLayout();
             if (modeEdition) {
@@ -216,8 +265,88 @@ public class VueProfil extends JFrame {
         });
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.setBackground(Color.WHITE);
         buttonPanel.add(editButton);
         panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        return panel;
+    }
+
+    private JPanel createHistoriquePanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                "Historique des commandes",
+                javax.swing.border.TitledBorder.LEFT,
+                javax.swing.border.TitledBorder.TOP,
+                new Font("Segoe UI", Font.BOLD, 16),
+                new Color(70, 130, 180))
+        );
+        panel.setBackground(Color.WHITE);
+
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBackground(Color.WHITE);
+
+        try (Connection connexion = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "")) {
+            CommandeDAO commandeDAO = new CommandeDAO(connexion);
+            List<Commande> commandes = commandeDAO.getCommandesParUtilisateur(utilisateur.getIdUtilisateur());
+
+            if (commandes.isEmpty()) {
+                JLabel emptyLabel = new JLabel("Aucune commande passée pour le moment.", SwingConstants.CENTER);
+                emptyLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+                emptyLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 30, 0));
+                contentPanel.add(emptyLabel);
+            } else {
+                for (Commande commande : commandes) {
+                    JPanel cmdPanel = new JPanel(new BorderLayout());
+                    cmdPanel.setBorder(BorderFactory.createCompoundBorder(
+                            BorderFactory.createLineBorder(new Color(220, 220, 220)),
+                            BorderFactory.createEmptyBorder(15, 15, 15, 15)
+                    ));
+                    cmdPanel.setBackground(Color.WHITE);
+                    cmdPanel.setMaximumSize(new Dimension(800, 150));
+
+                    // Récupérer les articles de la commande
+                    List<ArticlePanier> articles = commandeDAO.getArticlesCommande(commande.getIdCommande());
+                    commande.setArticles(articles);
+
+                    // Créer le récapitulatif
+                    StringBuilder recap = new StringBuilder("<html>");
+                    recap.append("<div style='font-size:14px; margin-bottom:8px;'><b>Commande #").append(commande.getIdCommande())
+                            .append("</b> - ").append(commande.getFormattedDate())
+                            .append("</div><div style='color:#2ecc71; font-weight:bold; margin-bottom:10px;'>")
+                            .append("Montant total: ").append(String.format("%.2f", commande.getMontantTotal())).append("€</div>");
+
+                    for (ArticlePanier articlePanier : articles) {
+                        Article article = articlePanier.getArticle();
+                        int quantiteVrac = articlePanier.getQuantite() / 3;
+                        int quantiteUnitaire = articlePanier.getQuantite() % 3;
+                        double prixTotal = quantiteVrac * article.getPrix_vrac() +
+                                quantiteUnitaire * article.getPrix();
+
+                        recap.append("<div style='margin-bottom:3px;'>• ").append(article.getNom())
+                             .append(" <span style='color:#777;'>(x").append(articlePanier.getQuantite()).append(")</span> : ")
+                             .append(String.format("%.2f", prixTotal)).append("€</div>");
+                    }
+                    recap.append("</html>");
+
+                    JLabel recapLabel = new JLabel(recap.toString());
+                    contentPanel.add(cmdPanel);
+                    contentPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+                    cmdPanel.add(recapLabel, BorderLayout.CENTER);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JLabel errorLabel = new JLabel("Erreur lors du chargement de l'historique", SwingConstants.CENTER);
+            errorLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            contentPanel.add(errorLabel);
+        }
+
+        JScrollPane scrollPane = new JScrollPane(contentPanel);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        panel.add(scrollPane, BorderLayout.CENTER);
 
         return panel;
     }
@@ -239,70 +368,59 @@ public class VueProfil extends JFrame {
             boolean success = utilisateurDAO.mettreAJourUtilisateur(utilisateur);
 
             if (success) {
-                JOptionPane.showMessageDialog(this, "Modifications enregistrées avec succès !");
+                JOptionPane.showMessageDialog(this,
+                        "Modifications enregistrées avec succès !",
+                        "Succès",
+                        JOptionPane.INFORMATION_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(this, "Erreur lors de la mise à jour", "Erreur", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this,
+                        "Erreur lors de la mise à jour",
+                        "Erreur",
+                        JOptionPane.ERROR_MESSAGE);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erreur de connexion à la base de données", "Erreur", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Erreur de connexion à la base de données",
+                    "Erreur",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private JPanel createHistoriquePanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Historique des commandes"));
+    /* ------------------------- */
+    /* METHODES UTILITAIRES */
+    /* ------------------------- */
 
-        JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+    private JButton createStyledButton(String text) {
+        JButton button = new JButton(text);
+        button.setBackground(new Color(52, 152, 219));
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
+        button.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        return button;
+    }
 
-        try (Connection connexion = DriverManager.getConnection("jdbc:mysql://localhost:3308/shopping", "root", "")) {
-            CommandeDAO commandeDAO = new CommandeDAO(connexion);
-            List<Commande> commandes = commandeDAO.getCommandesParUtilisateur(utilisateur.getIdUtilisateur());
+    private JTextField createStyledTextField(String text) {
+        JTextField field = new JTextField(text);
+        field.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        field.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                BorderFactory.createEmptyBorder(5, 8, 5, 8)
+        ));
+        return field;
+    }
 
-            if (commandes.isEmpty()) {
-                contentPanel.add(new JLabel("Aucune commande passée pour le moment.", SwingConstants.CENTER));
-            } else {
-                for (Commande commande : commandes) {
-                    JPanel cmdPanel = new JPanel(new BorderLayout());
-                    cmdPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+    private JLabel createInfoLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        label.setForeground(new Color(70, 70, 70));
+        return label;
+    }
 
-                    // Récupérer les articles de la commande
-                    List<ArticlePanier> articles = commandeDAO.getArticlesCommande(commande.getIdCommande());
-                    commande.setArticles(articles);
-
-                    // Créer le récapitulatif
-                    StringBuilder recap = new StringBuilder("<html>");
-                    recap.append("<b>Commande #").append(commande.getIdCommande())
-                            .append("</b> - ").append(commande.getFormattedDate())
-                            .append("<br/>Montant total: ").append(String.format("%.2f", commande.getMontantTotal())).append("€<br/>");
-
-                    for (ArticlePanier articlePanier : articles) {
-                        Article article = articlePanier.getArticle();
-                        double prixTotal = (articlePanier.getQuantite()/3) * article.getPrix_vrac() +
-                                (articlePanier.getQuantite()%3) * article.getPrix();
-
-                        recap.append("• ").append(article.getNom())
-                                .append(" - ").append(articlePanier.getQuantite()).append("x ")
-                                .append(String.format("%.2f", article.getPrix())).append("€<br/>");
-                    }
-                    recap.append("</html>");
-
-                    JLabel recapLabel = new JLabel(recap.toString());
-                    cmdPanel.add(recapLabel, BorderLayout.CENTER);
-
-                    contentPanel.add(cmdPanel);
-                    contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            contentPanel.add(new JLabel("Erreur lors du chargement de l'historique", SwingConstants.CENTER));
-        }
-
-        JScrollPane scrollPane = new JScrollPane(contentPanel);
-        panel.add(scrollPane, BorderLayout.CENTER);
-
-        return panel;
+    private JLabel createInfoValue(String text) {
+        JLabel label = new JLabel(text);
+        label.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        return label;
     }
 }
