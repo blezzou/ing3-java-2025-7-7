@@ -23,40 +23,77 @@ public class VuePanier extends JFrame {
     public VuePanier(Utilisateur utilisateur) {
         this.utilisateur = utilisateur;
 
+        // Configuration de la fenêtre
         setTitle("Mon Panier");
-        setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(900, 700);
+        setMinimumSize(new Dimension(800, 600));
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel mainPanel = new JPanel(new BorderLayout());
+        // Style global
+        UIManager.put("Panel.background", new Color(240, 240, 240));
+        UIManager.put("Button.background", new Color(70, 130, 180));
+        UIManager.put("Button.foreground", Color.WHITE);
+        setBackground(new Color(240, 240, 240));
 
-        JLabel headerLabel = new JLabel("Panier");
-        mainPanel.add(headerLabel, BorderLayout.NORTH);
+        // Panel principal
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        mainPanel.setBackground(new Color(240, 240, 240));
 
+        /* ------------------------- */
+        /* EN-TÊTE */
+        /* ------------------------- */
+        JPanel headerPanel = new JPanel();
+        headerPanel.setBackground(new Color(52, 73, 94));
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+
+        JLabel headerLabel = new JLabel("Votre Panier");
+        headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        headerLabel.setForeground(Color.WHITE);
+        headerPanel.add(headerLabel);
+
+        mainPanel.add(headerPanel, BorderLayout.NORTH);
+
+        /* ------------------------- */
+        /* LISTE DES ARTICLES */
+        /* ------------------------- */
         articlesPanel = new JPanel();
         articlesPanel.setLayout(new BoxLayout(articlesPanel, BoxLayout.Y_AXIS));
+        articlesPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        articlesPanel.setBackground(Color.WHITE);
+
         JScrollPane scrollPane = new JScrollPane(articlesPanel);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
-        
-        /*-------------------- Options en bas de page ------------------------*/
-        
+
+        /* ------------------------- */
+        /* PANEL BAS */
+        /* ------------------------- */
+        JPanel bottomPanel = new JPanel(new GridLayout(1, 2, 15, 0));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
+        bottomPanel.setBackground(new Color(240, 240, 240));
+
         // Bouton paiement
-        JButton payerButton = new JButton("Payer");
+        JButton payerButton = createStyledButton("Procéder au paiement");
+        payerButton.setBackground(new Color(46, 204, 113)); // Vert
+        payerButton.setFont(new Font("Segoe UI", Font.BOLD, 16));
         payerButton.addActionListener(e -> afficherRecapitulatif());
 
         // Bouton retour
-        JButton retourButton = new JButton("Retour à l'accueil");
+        JButton retourButton = createStyledButton("Retour à l'accueil");
+        retourButton.setBackground(new Color(120, 120, 120)); // Gris
         retourButton.addActionListener(e -> {
             new VueAccueil(utilisateur);
             dispose();
         });
 
-        JPanel bottomPanel = new JPanel(new GridLayout(2, 1));
-        bottomPanel.add(payerButton);
         bottomPanel.add(retourButton);
-
+        bottomPanel.add(payerButton);
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
+        // Chargement des articles
         panierArticles = chargerArticlesDuPanier();
         afficherArticles();
 
@@ -97,53 +134,78 @@ public class VuePanier extends JFrame {
         }
         return articles;
     }
-    
+
     /*---------------- Affichage des articles -----------------*/
 
     private void afficherArticles() {
         articlesPanel.removeAll();
 
         if (panierArticles.isEmpty()) {
-            articlesPanel.add(new JLabel("Votre panier est vide."));
+            JLabel emptyLabel = new JLabel("Votre panier est vide.");
+            emptyLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+            emptyLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            emptyLabel.setBorder(BorderFactory.createEmptyBorder(50, 0, 50, 0));
+            articlesPanel.add(emptyLabel);
         } else {
             for (ArticlePanier articlePanier : panierArticles) {
-                JPanel articlePanel = new JPanel(new BorderLayout());
-                articlePanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-                articlePanel.setPreferredSize(new Dimension(750, 80));
+                JPanel articlePanel = new JPanel(new BorderLayout(15, 0));
+                articlePanel.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(220, 220, 220)),
+                        BorderFactory.createEmptyBorder(15, 15, 15, 15)
+                ));
+                articlePanel.setBackground(Color.WHITE);
+                articlePanel.setMaximumSize(new Dimension(800, 100));
 
                 Article article = articlePanier.getArticle();
                 double prixTotal = (articlePanier.getQuantite()/3) * article.getPrix_vrac() + (articlePanier.getQuantite()%3) * article.getPrix();
 
-                // Affichage des articles s'il n'y a pas de vrac (achat en vrac à partir de 3 exemplaires)
-                if(articlePanier.getQuantite() < 3) {
-                    JLabel infoLabel = new JLabel("<html><b>" + article.getNom() + "</b> - " +
-                            "Prix total: " + String.format("%.2f", prixTotal) + "€ (" +
-                            article.getPrix() + "€ × " + articlePanier.getQuantite() + ")</html>");
-                    articlePanel.add(infoLabel, BorderLayout.CENTER);
-                }
+                // Panel d'informations
+                JPanel infoPanel = new JPanel();
+                infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+                infoPanel.setBackground(Color.WHITE);
 
+                // Nom et marque
+                JLabel nomLabel = new JLabel(article.getNom());
+                nomLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+                nomLabel.setForeground(new Color(44, 62, 80));
+
+                JLabel marqueLabel = new JLabel(article.getMarque());
+                marqueLabel.setFont(new Font("Segoe UI", Font.ITALIC, 14));
+
+                // Affichage des articles s'il n'y a pas de vrac
+                JLabel prixLabel;
+                if(articlePanier.getQuantite() < 3) {
+                    prixLabel = new JLabel(String.format(
+                            "Prix total: %.2f€ (%d × %.2f€)",
+                            prixTotal, articlePanier.getQuantite(), article.getPrix()
+                    ));
+                }
                 // Affichage des articles s'il y a achat en vrac
                 else {
-                    /* Si un article est acheté en un multiple de 3 exemplaires,
-                     le prix à l'unité n'intervient pas.*/
                     if(articlePanier.getQuantite()%3 == 0) {
-                        JLabel infoLabel = new JLabel("<html><b>" + article.getNom() + "</b> - " +
-                                "Prix total: " + String.format("%.2f", prixTotal) + "€ (" +
-                                article.getPrix_vrac()  + "€ × " + articlePanier.getQuantite()/3 + ")</html>");
-                        articlePanel.add(infoLabel, BorderLayout.CENTER);
-                    }
-
-                    /* Sinon il intervient */
-                    else {
-                        JLabel infoLabel = new JLabel("<html><b>" + article.getNom() + "</b> - " +
-                                "Prix total: " + String.format("%.2f", prixTotal) + "€ (" +
-                                article.getPrix_vrac() + "€ × " + articlePanier.getQuantite()/3 + " + " +
-                                article.getPrix() + " × " + articlePanier.getQuantite()%3 + ")</html>");
-                        articlePanel.add(infoLabel, BorderLayout.CENTER);
+                        prixLabel = new JLabel(String.format(
+                                "Prix total: %.2f€ (%d lots de 3 × %.2f€)",
+                                prixTotal, articlePanier.getQuantite()/3, article.getPrix_vrac()
+                        ));
+                    } else {
+                        prixLabel = new JLabel(String.format(
+                                "Prix total: %.2f€ (%d lots de 3 × %.2f€ + %d × %.2f€)",
+                                prixTotal, articlePanier.getQuantite()/3, article.getPrix_vrac(),
+                                articlePanier.getQuantite()%3, article.getPrix()
+                        ));
                     }
                 }
+                prixLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+                prixLabel.setForeground(new Color(231, 76, 60));
 
-                JButton supprimerButton = new JButton("Supprimer");
+                infoPanel.add(nomLabel);
+                infoPanel.add(marqueLabel);
+                infoPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+                infoPanel.add(prixLabel);
+
+                // Bouton supprimer
+                JButton supprimerButton = createStyledButton("Supprimer");
+                supprimerButton.setBackground(new Color(231, 76, 60)); // Rouge
                 supprimerButton.addActionListener(e -> {
                     UIManager.put("OptionPane.yesButtonText", "Oui");
                     UIManager.put("OptionPane.noButtonText", "Non");
@@ -158,10 +220,12 @@ public class VuePanier extends JFrame {
                         supprimerArticle(articlePanier);
                     }
                 });
+
+                articlePanel.add(infoPanel, BorderLayout.CENTER);
                 articlePanel.add(supprimerButton, BorderLayout.EAST);
 
                 articlesPanel.add(articlePanel);
-                articlesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+                articlesPanel.add(Box.createRigidArea(new Dimension(0, 15)));
             }
         }
         articlesPanel.revalidate();
@@ -263,45 +327,102 @@ public class VuePanier extends JFrame {
             return;
         }
 
-        // Création du message de récapitulatif
-        StringBuilder recap = new StringBuilder("<html><h2>Récapitulatif de votre commande</h2><ul>");
-
+        // Calcul du total
         double totalGeneral = 0;
+        for (ArticlePanier articlePanier : panierArticles) {
+            Article article = articlePanier.getArticle();
+            totalGeneral += (articlePanier.getQuantite()/3) * article.getPrix_vrac() +
+                    (articlePanier.getQuantite()%3) * article.getPrix();
+        }
+
+        // Création du panel de récapitulatif
+        JPanel recapPanel = new JPanel(new BorderLayout(10, 10));
+        recapPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        JLabel titleLabel = new JLabel("Récapitulatif de votre commande");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        recapPanel.add(titleLabel, BorderLayout.NORTH);
+
+        // Liste des articles
+        JPanel itemsPanel = new JPanel();
+        itemsPanel.setLayout(new BoxLayout(itemsPanel, BoxLayout.Y_AXIS));
+        itemsPanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
 
         for (ArticlePanier articlePanier : panierArticles) {
             Article article = articlePanier.getArticle();
             int qteVrac = articlePanier.getQuantite() / 3;
             int qteUnitaire = articlePanier.getQuantite() % 3;
             double prixTotal = qteVrac * article.getPrix_vrac() + qteUnitaire * article.getPrix();
-            totalGeneral += prixTotal;
 
-            recap.append("<li><b>").append(article.getNom()).append("</b> (")
-                    .append(article.getMarque()).append(")<br/>")
-                    .append("Quantité: ").append(articlePanier.getQuantite()).append(" (");
+            JPanel itemPanel = new JPanel(new BorderLayout());
+            itemPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(220, 220, 220)));
+            itemPanel.setBackground(Color.WHITE);
+
+            JLabel nameLabel = new JLabel(article.getNom() + " (" + article.getMarque() + ")");
+            nameLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+
+            JLabel detailsLabel = new JLabel();
+            detailsLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 
             if (qteVrac > 0) {
-                recap.append(qteVrac).append(" lot(s) de 3 à ").append(String.format("%.2f", article.getPrix_vrac())).append("€");
+                detailsLabel.setText(String.format(
+                        "%d lot(s) de 3 à %.2f€", qteVrac, article.getPrix_vrac()
+                ));
                 if (qteUnitaire > 0) {
-                    recap.append(" + ");
+                    detailsLabel.setText(detailsLabel.getText() + String.format(
+                            " + %d unité(s) à %.2f€", qteUnitaire, article.getPrix()
+                    ));
                 }
-            }
-            if (qteUnitaire > 0) {
-                recap.append(qteUnitaire).append(" unité(s) à ").append(String.format("%.2f", article.getPrix())).append("€");
+            } else {
+                detailsLabel.setText(String.format(
+                        "%d unité(s) à %.2f€", qteUnitaire, article.getPrix()
+                ));
             }
 
-            recap.append(")<br/>Total: ").append(String.format("%.2f", prixTotal)).append("€</li><br/>");
+            JLabel priceLabel = new JLabel(String.format("%.2f€", prixTotal));
+            priceLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+            priceLabel.setForeground(new Color(231, 76, 60));
+
+            JPanel leftPanel = new JPanel(new GridLayout(2, 1));
+            leftPanel.setBackground(Color.WHITE);
+            leftPanel.add(nameLabel);
+            leftPanel.add(detailsLabel);
+
+            itemPanel.add(leftPanel, BorderLayout.WEST);
+            itemPanel.add(priceLabel, BorderLayout.EAST);
+            itemsPanel.add(itemPanel);
+            itemsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         }
 
-        recap.append("</ul><h3>Total général: ").append(String.format("%.2f", totalGeneral)).append("€</h3></html>");
+        JScrollPane scrollPane = new JScrollPane(itemsPanel);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        recapPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Ajout des boutons de confirmation
+        // Total général
+        JPanel totalPanel = new JPanel(new BorderLayout());
+        totalPanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
+        totalPanel.setBackground(Color.WHITE);
+
+        JLabel totalLabel = new JLabel("Total général:");
+        totalLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+
+        JLabel totalValue = new JLabel(String.format("%.2f€", totalGeneral));
+        totalValue.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        totalValue.setForeground(new Color(46, 204, 113)); // Vert
+
+        totalPanel.add(totalLabel, BorderLayout.WEST);
+        totalPanel.add(totalValue, BorderLayout.EAST);
+        recapPanel.add(totalPanel, BorderLayout.SOUTH);
+
+        // Options de paiement
         Object[] options = {"Payer", "Annuler"};
         int choix = JOptionPane.showOptionDialog(
                 this,
-                recap.toString(),
+                recapPanel,
                 "Confirmation de paiement",
                 JOptionPane.YES_NO_OPTION,
-                JOptionPane.INFORMATION_MESSAGE,
+                JOptionPane.PLAIN_MESSAGE,
                 null,
                 options,
                 options[0]
@@ -312,7 +433,7 @@ public class VuePanier extends JFrame {
         }
     }
 
-    /*--------------- Effectuation du paiement -------------*/
+    /*--------------- Paiement -------------*/
     private void effectuerPaiement() {
         int panierId = PanierDAO.getOrCreatePanierId(utilisateur.getIdUtilisateur());
         Connection connexion = null;
@@ -372,5 +493,19 @@ public class VuePanier extends JFrame {
                     "Erreur",
                     JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    /* ------------------------- */
+    /* METHODES UTILITAIRES */
+    /* ------------------------- */
+
+    private JButton createStyledButton(String text) {
+        JButton button = new JButton(text);
+        button.setBackground(new Color(52, 152, 219));
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        button.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        return button;
     }
 }
